@@ -27,15 +27,10 @@
       </div>
       <button class="round-button" id="resetCameraButton" type="button">⌖</button>
     </header>
-    <section class="viewport-gizmo">
-      <button class="gizmo-orb gizmo-x" data-camera-axis="x" type="button"><span>X</span></button>
-      <button class="gizmo-orb gizmo-y" data-camera-axis="y" type="button"><span>Y</span></button>
-      <button class="gizmo-orb gizmo-z" data-camera-axis="z" type="button"><span>Z</span></button>
-      <button class="gizmo-cube" data-camera-axis="home" type="button">AE</button>
-    </section>
+    <canvas class="viewport-gizmo" id="viewGizmoCanvas" width="120" height="120"></canvas>
     <aside class="clean-side-slot left"></aside>
     <aside class="clean-side-slot right"></aside>
-    <footer class="scene-help">Grid infinito · Cámara suave · X/Y/Z alinean la vista</footer>
+    <footer class="scene-help">Cámara premium · Pinch zoom · Gizmo 3D interactivo</footer>
   </main>
 </body>
 </html>
