@@ -1,0 +1,53 @@
+@media (max-width: 760px) {
+  .hub-shell {
+    padding-bottom: calc(150px + env(safe-area-inset-bottom));
+  }
+
+  .hub-content {
+    padding-bottom: calc(140px + env(safe-area-inset-bottom));
+  }
+
+  #templatesSection {
+    margin-bottom: 100px;
+  }
+
+  .hub-project-card {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .hub-project-main {
+    min-width: 0;
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .hub-project-main strong {
+    max-width: 100%;
+  }
+
+  .hub-project-actions {
+    flex: 0 0 auto;
+  }
+
+  .hub-status-icon {
+    display: none;
+  }
+
+  .hub-template-grid {
+    padding-bottom: 24px;
+  }
+
+  .hub-template-card {
+    min-height: 196px;
+  }
+
+  .hub-template-body {
+    min-height: 86px;
+  }
+
+  .hub-template-body small {
+    display: block;
+    overflow: visible;
+  }
+}
