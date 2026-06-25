@@ -1,21 +1,50 @@
-# PlayCanvas Mobile Adaptation
+# Atlas Engine
 
-Adaptación móvil no oficial inspirada en PlayCanvas para crear, editar y probar juegos 3D desde navegador móvil.
+Motor gráfico web móvil, open source, creado por módulos para crear, editar y probar juegos 3D desde navegador móvil.
 
 ## Demo
 
-Cuando GitHub Pages termine el despliegue, la demo pública debería abrir aquí:
-
 https://h9k99rpg8n-cloud.github.io/playcanvas-mobile-adaptation/
+
+## Versión actual
+
+**0.0.2 — Gestión de proyectos**
+
+Esta versión agrega la primera administración básica de proyectos:
+
+- Crear proyecto.
+- Abrir proyecto activo.
+- Eliminar proyecto activo.
+- Ver proyectos recientes.
+- Guardar proyectos en `localStorage` del navegador.
+
+Todavía no incluye escena 3D. Esa parte llegará en versiones posteriores.
+
+## Arquitectura por módulos
+
+El proyecto se organiza por módulos para que el motor pueda crecer sin volverse un solo archivo gigante.
+
+```text
+src/
+├── app/
+│   └── projects-page.js
+├── core/
+│   └── storage.js
+└── modules/
+    └── projects/
+        ├── project-store.js
+        └── project-ui.js
+```
 
 ## Objetivo
 
-El objetivo de este repositorio no es copiar todo el editor oficial de golpe ni romper el motor. La idea es construir una experiencia móvil ordenada:
+La idea es construir una experiencia móvil ordenada:
 
-1. **Launcher**: pantalla inicial para crear o abrir proyectos.
-2. **Editor visual**: escena 3D, cámara táctil, jerarquía, inspector y assets.
-3. **Editor de código**: pantalla para escribir y editar scripts.
-4. **Modo probar juego**: ejecutar la escena en pantalla completa desde el móvil.
+1. **Launcher**: pantalla inicial para entrar al motor.
+2. **Gestión de proyectos**: crear, abrir, eliminar y listar proyectos.
+3. **Editor visual**: escena 3D, cámara táctil, jerarquía, inspector y assets.
+4. **Editor de código**: pantalla para escribir y editar scripts.
+5. **Modo probar juego**: ejecutar la escena en pantalla completa desde el móvil.
 
 ## Estrategia inicial
 
@@ -25,15 +54,6 @@ En vez de modificar todo el código fuente de PlayCanvas desde el primer día, e
 - Crear una interfaz prototipo desde cero.
 - Conectar el prototipo al motor cuando la base sea estable.
 - Mantener separada la adaptación móvil del código original para facilitar futuras actualizaciones.
-
-## Decisión técnica inicial
-
-La ruta recomendada es **híbrida**:
-
-- Reescribir la interfaz móvil desde cero.
-- No reescribir el renderizado 3D desde cero.
-- Conectar la interfaz móvil al engine cuando ya exista una base estable.
-- Reutilizar código abierto solo cuando sea necesario y manteniendo sus avisos de licencia.
 
 ## Relación con PlayCanvas
 
