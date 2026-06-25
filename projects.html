@@ -13,24 +13,22 @@
 <body>
   <main class="hub-shell">
     <aside class="hub-sidebar" aria-label="Navegación principal">
-      <a class="hub-brand" href="index.html" aria-label="Atlas Engine inicio">
-        <span>AE</span>
-      </a>
+      <a class="hub-brand" href="index.html" aria-label="Atlas Engine inicio"><span>AE</span></a>
       <nav class="hub-nav">
-        <a class="hub-nav-item active" href="#projectsSection"><span>▦</span><small>Proyectos</small></a>
-        <a class="hub-nav-item" href="#templatesSection"><span>▣</span><small>Plantillas</small></a>
-        <a class="hub-nav-item" href="#learnSection"><span>?</span><small>Aprender</small></a>
-        <a class="hub-nav-item" href="#settingsSection"><span>⚙</span><small>Ajustes</small></a>
+        <button class="hub-nav-item active" data-view="projectsView" type="button"><span>▦</span><small>Proyectos</small></button>
+        <button class="hub-nav-item" data-view="templatesView" type="button"><span>▣</span><small>Plantillas</small></button>
+        <button class="hub-nav-item" data-view="learnView" type="button"><span>?</span><small>Aprender</small></button>
+        <button class="hub-nav-item" data-view="settingsView" type="button"><span>⚙</span><small>Ajustes</small></button>
       </nav>
     </aside>
 
     <section class="hub-content">
-      <header class="hub-header">
+      <header class="hub-header" id="hubHeader">
         <div>
           <p class="hub-kicker">Atlas Engine Hub</p>
-          <h1>Proyectos</h1>
+          <h1 id="hubTitle">Proyectos</h1>
         </div>
-        <div class="hub-header-actions">
+        <div class="hub-header-actions" id="projectHeaderActions">
           <label class="hub-search" for="projectSearchInput">
             <span>⌕</span>
             <input id="projectSearchInput" placeholder="Buscar proyectos" />
@@ -39,80 +37,98 @@
         </div>
       </header>
 
-      <section class="hub-panel" id="projectsSection" aria-label="Lista de proyectos">
-        <div class="hub-section-title">
-          <div>
-            <p class="hub-kicker">Recientes</p>
-            <h2>Mis proyectos</h2>
+      <section class="hub-view active" id="projectsView" aria-label="Vista de proyectos">
+        <section class="hub-panel" aria-label="Lista de proyectos">
+          <div class="hub-section-title">
+            <div>
+              <p class="hub-kicker">Recientes</p>
+              <h2>Mis proyectos</h2>
+            </div>
+            <span class="project-count" id="projectCount">0</span>
           </div>
-          <span class="project-count" id="projectCount">0</span>
-        </div>
+          <div class="hub-empty" id="emptyState">
+            <span>◈</span>
+            <h2>No hay proyectos todavía</h2>
+            <p>Crea un proyecto nuevo y aparecerá aquí, listo para abrirse desde el editor.</p>
+          </div>
+          <div class="hub-project-list" id="projectList"></div>
+        </section>
 
-        <div class="hub-empty" id="emptyState">
-          <span>◈</span>
-          <h2>No hay proyectos todavía</h2>
-          <p>Crea un proyecto nuevo y aparecerá aquí, listo para abrirse desde el editor.</p>
-        </div>
-
-        <div class="hub-project-list" id="projectList"></div>
+        <section class="hub-panel" aria-label="Mis plantillas">
+          <div class="hub-section-title">
+            <div>
+              <p class="hub-kicker">Descargadas</p>
+              <h2>Mis Plantillas</h2>
+            </div>
+          </div>
+          <div class="my-template-list" id="myTemplateList"></div>
+        </section>
       </section>
 
-      <section class="hub-panel" id="templatesSection" aria-label="Plantillas disponibles">
-        <div class="hub-section-title">
-          <div>
-            <p class="hub-kicker">Crucial</p>
-            <h2>Plantillas</h2>
+      <section class="hub-view" id="templatesView" aria-label="Tienda de plantillas">
+        <section class="hub-panel">
+          <div class="hub-section-title">
+            <div>
+              <p class="hub-kicker">Tienda</p>
+              <h2>Plantillas</h2>
+            </div>
           </div>
-          <button class="hub-ghost-button" id="openTemplatePanelButton" type="button">Ver todas</button>
-        </div>
-        <div class="hub-template-grid" id="templateGrid"></div>
+          <div class="hub-template-grid" id="templateGrid"></div>
+        </section>
       </section>
 
-      <section class="hub-panel" id="learnSection" aria-label="Aprender">
-        <div class="hub-section-title">
-          <div>
-            <p class="hub-kicker">Guías</p>
-            <h2>Aprender</h2>
-          </div>
-        </div>
-        <div class="hub-learn-grid">
-          <article><strong>Primer proyecto</strong><small>Crea tu primera escena y abre el editor.</small></article>
-          <article><strong>Materiales PBR</strong><small>Cómo usar la futura tienda de materiales.</small></article>
-        </div>
+      <section class="hub-view" id="learnView" aria-label="Aprender">
+        <section class="hub-panel empty-view-panel">
+          <p class="hub-kicker">Aprender</p>
+          <h2>Centro de aprendizaje</h2>
+          <p class="hub-muted">Próximamente guías, tutoriales y ejemplos del motor.</p>
+        </section>
       </section>
 
-      <section class="hub-panel" id="settingsSection" aria-label="Configuración">
-        <div class="hub-section-title">
-          <div>
-            <p class="hub-kicker">Sistema</p>
-            <h2>Configuración</h2>
-          </div>
-        </div>
-        <p class="hub-muted">Ajustes del launcher, tema, rendimiento móvil y gestión de librerías llegarán después.</p>
+      <section class="hub-view" id="settingsView" aria-label="Ajustes">
+        <section class="hub-panel empty-view-panel">
+          <p class="hub-kicker">Configuración</p>
+          <h2>Ajustes de Atlas</h2>
+          <p class="hub-muted">Próximamente tema, rendimiento móvil, librerías y cuenta.</p>
+        </section>
       </section>
     </section>
 
     <nav class="hub-bottom-nav" aria-label="Navegación móvil">
-      <a class="active" href="#projectsSection"><span>▦</span><small>Proyectos</small></a>
-      <a href="#templatesSection"><span>▣</span><small>Plantillas</small></a>
-      <a href="#learnSection"><span>?</span><small>Aprender</small></a>
-      <a href="#settingsSection"><span>⚙</span><small>Ajustes</small></a>
+      <button class="active" data-view="projectsView" type="button"><span>▦</span><small>Proyectos</small></button>
+      <button data-view="templatesView" type="button"><span>▣</span><small>Plantillas</small></button>
+      <button data-view="learnView" type="button"><span>?</span><small>Aprender</small></button>
+      <button data-view="settingsView" type="button"><span>⚙</span><small>Ajustes</small></button>
     </nav>
 
     <section class="hub-create-sheet" id="templatePanel" hidden aria-label="Crear proyecto">
-      <div class="hub-create-card">
+      <form class="hub-create-card" id="createProjectForm">
         <div class="hub-section-title">
           <div>
             <p class="hub-kicker">Nuevo Proyecto</p>
-            <h2>Crear con plantilla</h2>
+            <h2>Crear proyecto</h2>
           </div>
           <button class="icon-button" id="closeTemplatePanelButton" type="button">✕</button>
         </div>
-        <label class="field-label" for="projectNameInput">Nombre del proyecto</label>
-        <input class="text-field" id="projectNameInput" maxlength="32" placeholder="Mi primer mundo" />
-        <p class="hub-muted">Selecciona una plantilla en la cuadrícula y luego crea el proyecto.</p>
-        <button class="unity-primary-button full" id="confirmCreateProjectButton" type="button">Crear Proyecto</button>
-      </div>
+
+        <label class="field-label" for="projectNameInput">Nombre del proyecto *</label>
+        <input class="text-field" id="projectNameInput" maxlength="40" placeholder="Mi primer mundo" required />
+
+        <label class="field-label" for="projectDescriptionInput">Descripción *</label>
+        <textarea class="text-field textarea-field" id="projectDescriptionInput" maxlength="160" placeholder="Describe de qué trata tu juego" required></textarea>
+
+        <label class="field-label" for="gameTypeSelect">Tipo de juego *</label>
+        <select class="text-field" id="gameTypeSelect" required>
+          <option value="2D">2D</option>
+          <option value="3D" selected>3D</option>
+          <option value="Isométrico">Isométrico</option>
+        </select>
+
+        <label class="field-label" for="installedTemplateSelect">Usar plantilla *</label>
+        <select class="text-field" id="installedTemplateSelect" required></select>
+
+        <button class="unity-primary-button full" id="confirmCreateProjectButton" type="submit">Crear Proyecto</button>
+      </form>
     </section>
   </main>
 </body>
