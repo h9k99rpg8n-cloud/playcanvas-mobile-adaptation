@@ -24,7 +24,7 @@ function escapeHtml(value) {
 
 function goToEditor(projectId) {
   setActiveProject(projectId);
-  location.assign('editor.html?project=' + projectId);
+  location.assign('scene-editor.html?project=' + projectId);
 }
 
 function renderTemplateCard(template) {
