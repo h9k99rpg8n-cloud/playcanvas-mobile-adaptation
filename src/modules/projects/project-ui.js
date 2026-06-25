@@ -22,8 +22,9 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 
-function showMessage(message) {
-  window.alert(message);
+function goToEditor(projectId) {
+  setActiveProject(projectId);
+  location.assign('editor.html?project=' + projectId);
 }
 
 function renderTemplateCard(template) {
@@ -64,9 +65,9 @@ function renderProjectItem(project, activeId) {
           <strong>${escapeHtml(project.name)}</strong>
           <small>${escapeHtml(project.template)} • ${escapeHtml(project.updatedAt)}</small>
         </span>
-        <span class="project-state">${isActive ? 'Abierto' : 'Abrir'}</span>
+        <span class="project-state">Editar</span>
       </button>
-      <button class="icon-button danger" data-delete-project-id="${project.id}" type="button" aria-label="Eliminar ${escapeHtml(project.name)}">🗑️</button>
+      <button class="icon-button danger" data-delete-project-id="${project.id}" type="button" aria-label="Eliminar proyecto">🗑️</button>
     </article>
   `;
 }
@@ -83,12 +84,7 @@ function renderProjects() {
   list.innerHTML = projects.map((project) => renderProjectItem(project, activeId)).join('');
 
   list.querySelectorAll('[data-open-project-id]').forEach((button) => {
-    button.addEventListener('click', () => {
-      setActiveProject(button.dataset.openProjectId);
-      renderProjects();
-      const project = getProjects().find((item) => item.id === button.dataset.openProjectId);
-      showMessage(`Proyecto abierto: ${project?.name || 'Sin nombre'}\n\nEl editor visual llegará en la versión 0.0.4.`);
-    });
+    button.addEventListener('click', () => goToEditor(button.dataset.openProjectId));
   });
 
   list.querySelectorAll('[data-delete-project-id]').forEach((button) => {
@@ -115,10 +111,11 @@ function closeTemplatePanel() {
 
 function handleCreateProject() {
   const input = getElement('projectNameInput');
-  createProject(input.value, selectedTemplateId);
+  const project = createProject(input.value, selectedTemplateId);
   input.value = '';
   closeTemplatePanel();
   renderProjects();
+  goToEditor(project.id);
 }
 
 export function mountProjectsPage() {
