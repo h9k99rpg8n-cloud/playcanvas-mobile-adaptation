@@ -8,19 +8,20 @@ https://h9k99rpg8n-cloud.github.io/playcanvas-mobile-adaptation/
 
 ## Versión actual
 
-**0.0.3 — Plantillas**
+**0.0.4 — Primer editor**
 
-Esta versión agrega el flujo de creación por plantillas:
+Esta versión agrega la primera pantalla del editor visual:
 
-- Escena vacía.
-- Juego 3D.
-- Aplicación web.
-- Demo básica.
-- Panel móvil para crear proyecto sin salir de la página.
-- Eliminación por icono en cada proyecto para ahorrar espacio.
-- Guardado de plantilla elegida en `localStorage` del navegador.
+- Página `editor.html`.
+- Barra superior del editor.
+- Viewport inicial simulado.
+- Panel de jerarquía.
+- Panel de inspector.
+- Panel de assets.
+- Botón para agregar objetos demo.
+- Apertura del editor desde proyectos.
 
-La demo básica todavía es solo interfaz; tendrá funcionalidad cuando llegue el editor visual.
+Todavía no incluye render 3D real. Esta versión crea el cascarón del editor para que el motor ya tenga forma de herramienta.
 
 ## Arquitectura por módulos
 
@@ -29,10 +30,14 @@ El proyecto se organiza por módulos para que el motor pueda crecer sin volverse
 ```text
 src/
 ├── app/
+│   ├── editor-page.js
 │   └── projects-page.js
 ├── core/
 │   └── storage.js
 └── modules/
+    ├── editor/
+    │   ├── editor-state.js
+    │   └── editor-ui.js
     ├── projects/
     │   ├── project-store.js
     │   └── project-ui.js
