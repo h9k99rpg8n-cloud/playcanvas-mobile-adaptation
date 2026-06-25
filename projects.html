@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="hub.css" />
   <link rel="stylesheet" href="hub-mobile-fixes.css" />
+  <link rel="stylesheet" href="hub-view-fixes.css" />
   <script type="module" src="src/app/projects-page.js"></script>
 </head>
 <body>
@@ -110,23 +111,18 @@
           </div>
           <button class="icon-button" id="closeTemplatePanelButton" type="button">✕</button>
         </div>
-
         <label class="field-label" for="projectNameInput">Nombre del proyecto *</label>
         <input class="text-field" id="projectNameInput" maxlength="40" placeholder="Mi primer mundo" required />
-
         <label class="field-label" for="projectDescriptionInput">Descripción *</label>
         <textarea class="text-field textarea-field" id="projectDescriptionInput" maxlength="160" placeholder="Describe de qué trata tu juego" required></textarea>
-
         <label class="field-label" for="gameTypeSelect">Tipo de juego *</label>
         <select class="text-field" id="gameTypeSelect" required>
           <option value="2D">2D</option>
           <option value="3D" selected>3D</option>
           <option value="Isométrico">Isométrico</option>
         </select>
-
         <label class="field-label" for="installedTemplateSelect">Usar plantilla *</label>
         <select class="text-field" id="installedTemplateSelect" required></select>
-
         <button class="unity-primary-button full" id="confirmCreateProjectButton" type="submit">Crear Proyecto</button>
       </form>
     </section>
