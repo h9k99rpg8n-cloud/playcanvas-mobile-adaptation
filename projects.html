@@ -13,15 +13,31 @@
     <header class="top-bar">
       <a class="back-button" href="index.html" aria-label="Volver al launcher">←</a>
       <div>
-        <p class="eyebrow compact">Atlas Engine 0.0.2</p>
+        <p class="eyebrow compact">Atlas Engine 0.0.3</p>
         <h1>Proyectos</h1>
       </div>
     </header>
 
-    <section class="project-actions-card" aria-label="Gestión de proyectos">
-      <button class="primary-button action-button" id="createProjectButton" type="button">➕ Crear proyecto</button>
-      <button class="secondary-button action-button" id="openProjectButton" type="button">📂 Abrir proyecto</button>
-      <button class="secondary-button action-button danger" id="deleteProjectButton" type="button">🗑️ Eliminar proyecto</button>
+    <section class="project-actions-card compact-actions" aria-label="Acciones rápidas">
+      <button class="primary-button action-button" id="createProjectButton" type="button">➕ Nuevo proyecto</button>
+      <p class="action-help">Elige una plantilla y guarda el proyecto en este navegador.</p>
+    </section>
+
+    <section class="template-card" id="templatePanel" hidden aria-label="Plantillas de proyecto">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow compact">0.0.3 — Plantillas</p>
+          <h2>Crear proyecto</h2>
+        </div>
+        <button class="icon-button" id="closeTemplatePanelButton" type="button" aria-label="Cerrar plantillas">✕</button>
+      </div>
+
+      <label class="field-label" for="projectNameInput">Nombre</label>
+      <input class="text-field" id="projectNameInput" maxlength="32" placeholder="Mi primer mundo" />
+
+      <div class="template-grid" id="templateGrid"></div>
+
+      <button class="primary-button action-button" id="confirmCreateProjectButton" type="button">Crear con plantilla</button>
     </section>
 
     <section class="project-list-card" aria-label="Proyectos recientes">
@@ -45,9 +61,9 @@
     <section class="roadmap-card" aria-label="Módulos de la versión">
       <h2>Módulos activos</h2>
       <ul>
+        <li>Template Registry: plantillas base</li>
         <li>Project Store: guardado local</li>
-        <li>Project UI: lista y acciones</li>
-        <li>Shell móvil: navegación por páginas</li>
+        <li>Project UI: acciones compactas</li>
       </ul>
     </section>
   </main>
