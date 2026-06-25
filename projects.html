@@ -4,33 +4,50 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b1020" />
-  <title>Nebula Forge - Proyectos</title>
+  <title>Atlas Engine - Proyectos</title>
   <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="src/app/projects-page.js"></script>
 </head>
 <body>
   <main class="projects-screen">
     <header class="top-bar">
       <a class="back-button" href="index.html" aria-label="Volver al launcher">←</a>
       <div>
-        <p class="eyebrow compact">Nebula Forge</p>
+        <p class="eyebrow compact">Atlas Engine 0.0.2</p>
         <h1>Proyectos</h1>
       </div>
     </header>
 
-    <section class="soon-card">
-      <div class="soon-icon" aria-hidden="true">⚙️</div>
-      <h2>Próximamente</h2>
-      <p>
-        Aquí irá la creación de proyectos, plantillas, proyectos guardados y ajustes iniciales del motor.
-      </p>
+    <section class="project-actions-card" aria-label="Gestión de proyectos">
+      <button class="primary-button action-button" id="createProjectButton" type="button">➕ Crear proyecto</button>
+      <button class="secondary-button action-button" id="openProjectButton" type="button">📂 Abrir proyecto</button>
+      <button class="secondary-button action-button danger" id="deleteProjectButton" type="button">🗑️ Eliminar proyecto</button>
     </section>
 
-    <section class="roadmap-card" aria-label="Próximos módulos">
-      <h2>Siguiente paso</h2>
+    <section class="project-list-card" aria-label="Proyectos recientes">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow compact">⭐ Recientes</p>
+          <h2>Mis proyectos</h2>
+        </div>
+        <span class="project-count" id="projectCount">0</span>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="soon-icon" aria-hidden="true">🧩</div>
+        <h2>Aún no hay proyectos</h2>
+        <p>Crea tu primer proyecto para que aparezca en esta lista.</p>
+      </div>
+
+      <div class="project-list" id="projectList"></div>
+    </section>
+
+    <section class="roadmap-card" aria-label="Módulos de la versión">
+      <h2>Módulos activos</h2>
       <ul>
-        <li>Crear proyecto nuevo</li>
-        <li>Elegir plantilla básica</li>
-        <li>Abrir editor visual</li>
+        <li>Project Store: guardado local</li>
+        <li>Project UI: lista y acciones</li>
+        <li>Shell móvil: navegación por páginas</li>
       </ul>
     </section>
   </main>
