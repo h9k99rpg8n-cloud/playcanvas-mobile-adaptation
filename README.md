@@ -2,6 +2,12 @@
 
 Adaptación móvil no oficial inspirada en PlayCanvas para crear, editar y probar juegos 3D desde navegador móvil.
 
+## Demo
+
+Cuando GitHub Pages termine el despliegue, la demo pública debería abrir aquí:
+
+https://h9k99rpg8n-cloud.github.io/playcanvas-mobile-adaptation/
+
 ## Objetivo
 
 El objetivo de este repositorio no es copiar todo el editor oficial de golpe ni romper el motor. La idea es construir una experiencia móvil ordenada:
