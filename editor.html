@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#070a14" />
+  <title>Atlas Engine - Editor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="src/app/editor-page.js"></script>
+</head>
+<body>
+  <main class="editor-screen">
+    <header class="editor-top-bar">
+      <a class="back-button" href="projects.html" aria-label="Volver a proyectos">←</a>
+      <div class="editor-title-block">
+        <p class="eyebrow compact">Atlas Engine 0.0.4</p>
+        <h1 id="editorProjectName">Editor</h1>
+      </div>
+      <button class="icon-button" id="playButton" type="button" aria-label="Probar juego">▶</button>
+    </header>
+
+    <section class="editor-viewport-card" aria-label="Vista del editor">
+      <div class="viewport-toolbar">
+        <span>Vista 3D</span>
+        <span id="templateBadge">Plantilla</span>
+      </div>
+
+      <div class="fake-viewport" id="viewportPreview">
+        <div class="grid-floor" aria-hidden="true"></div>
+        <div class="viewport-object cube" aria-hidden="true"></div>
+        <div class="viewport-label">
+          <strong>Viewport inicial</strong>
+          <small>El render 3D real llega después. Ahorita es el primer cascarón del editor.</small>
+        </div>
+      </div>
+    </section>
+
+    <nav class="editor-tabs" aria-label="Paneles del editor">
+      <button class="editor-tab active" data-panel="hierarchy" type="button">Jerarquía</button>
+      <button class="editor-tab" data-panel="inspector" type="button">Inspector</button>
+      <button class="editor-tab" data-panel="assets" type="button">Assets</button>
+    </nav>
+
+    <section class="editor-panel active" id="hierarchyPanel" aria-label="Jerarquía">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow compact">Escena</p>
+          <h2>Jerarquía</h2>
+        </div>
+        <button class="icon-button" id="addObjectButton" type="button" aria-label="Agregar objeto">＋</button>
+      </div>
+      <div class="hierarchy-list" id="hierarchyList"></div>
+    </section>
+
+    <section class="editor-panel" id="inspectorPanel" aria-label="Inspector">
+      <p class="eyebrow compact">Propiedades</p>
+      <h2>Inspector</h2>
+      <div class="inspector-card" id="inspectorContent"></div>
+    </section>
+
+    <section class="editor-panel" id="assetsPanel" aria-label="Assets">
+      <p class="eyebrow compact">Archivos</p>
+      <h2>Assets</h2>
+      <div class="asset-list" id="assetList"></div>
+    </section>
+  </main>
+</body>
+</html>
