@@ -1,18 +1,20 @@
 import * as THREE from 'three';
-import { OrbitCameraController } from '../camera/orbit-camera-controller.js';
+import { OrbitController } from '../camera/OrbitController.js';
+import { ViewGizmo } from '../gizmos/ViewGizmo.js';
 import { createViewportGrid } from '../grid/viewport-grid.js';
 import { setupViewportEnvironment } from './viewport-environment.js';
 
 export class ViewportRenderer {
-  constructor(canvas) {
+  constructor(canvas, gizmoCanvas = null) {
     this.canvas = canvas;
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 300);
+    this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     setupViewportEnvironment(this.scene, this.renderer);
     this.scene.add(createViewportGrid());
-    this.cameraController = new OrbitCameraController(this.camera, canvas);
+    this.cameraController = new OrbitController(this.camera, canvas);
+    this.viewGizmo = gizmoCanvas ? new ViewGizmo(gizmoCanvas, this.camera, this.cameraController) : null;
     this.clock = new THREE.Clock();
     this.animate();
   }
@@ -30,6 +32,7 @@ export class ViewportRenderer {
     this.resize();
     this.cameraController.update(delta);
     this.renderer.render(this.scene, this.camera);
+    if (this.viewGizmo) this.viewGizmo.update();
     requestAnimationFrame(() => this.animate());
   }
 }
