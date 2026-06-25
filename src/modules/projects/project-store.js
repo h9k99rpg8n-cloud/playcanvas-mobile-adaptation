@@ -23,17 +23,20 @@ export function saveProjects(projects) {
   return writeStorage(PROJECTS_KEY, projects);
 }
 
-export function createProject(name, templateId = getDefaultTemplate().id) {
+export function createProject(options = {}) {
   const projects = getProjects();
-  const template = getTemplateById(templateId);
-  const cleanName = name?.trim() || `${template.name} ${projects.length + 1}`;
+  const template = getTemplateById(options.templateId || getDefaultTemplate().id);
+  const cleanName = options.name?.trim() || `${template.name} ${projects.length + 1}`;
 
   const project = {
     id: createId(),
     name: cleanName,
+    description: options.description?.trim() || 'Sin descripción',
+    gameType: options.gameType || '3D',
     templateId: template.id,
     template: template.name,
     templateIcon: template.icon,
+    editorVersion: template.editorVersion || 'Atlas 0.0.4',
     createdAt: getNowLabel(),
     updatedAt: getNowLabel(),
     favorite: projects.length === 0,
