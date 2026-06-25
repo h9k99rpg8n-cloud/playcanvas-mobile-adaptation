@@ -1,4 +1,5 @@
 import { readStorage, writeStorage } from '../../core/storage.js';
+import { getDefaultTemplate, getTemplateById } from '../templates/template-registry.js';
 
 const PROJECTS_KEY = 'projects';
 const ACTIVE_PROJECT_KEY = 'active-project-id';
@@ -22,17 +23,21 @@ export function saveProjects(projects) {
   return writeStorage(PROJECTS_KEY, projects);
 }
 
-export function createProject(name) {
+export function createProject(name, templateId = getDefaultTemplate().id) {
   const projects = getProjects();
-  const cleanName = name?.trim() || `Proyecto ${projects.length + 1}`;
+  const template = getTemplateById(templateId);
+  const cleanName = name?.trim() || `${template.name} ${projects.length + 1}`;
 
   const project = {
     id: createId(),
     name: cleanName,
-    template: 'Escena vacía',
+    templateId: template.id,
+    template: template.name,
+    templateIcon: template.icon,
     createdAt: getNowLabel(),
     updatedAt: getNowLabel(),
-    favorite: projects.length === 0
+    favorite: projects.length === 0,
+    data: template.data
   };
 
   projects.unshift(project);
