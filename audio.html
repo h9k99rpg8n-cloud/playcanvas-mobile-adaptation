@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Atlas Engine - Audio Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="audio.css" />
+  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.core.min.js"></script>
+  <script type="module" src="src/app/audio-page.js"></script>
+</head>
+<body>
+  <main class="audio-screen">
+    <header class="top-bar">
+      <a class="back-button" href="projects.html">←</a>
+      <div>
+        <p class="eyebrow compact">Atlas Engine Audio</p>
+        <h1>Audio Lab</h1>
+      </div>
+    </header>
+
+    <section class="audio-card">
+      <p class="eyebrow compact">Formatos</p>
+      <h2>Importar sonido</h2>
+      <p class="audio-help">Compatibles: MP3, WAV y OGG. La primera versión valida, organiza y reproduce.</p>
+      <input class="audio-input" id="audioInput" type="file" accept="audio/mpeg,audio/wav,audio/ogg,.mp3,.wav,.ogg" />
+      <div class="audio-actions">
+        <button class="primary-button" id="playButton" type="button">▶ Reproducir</button>
+        <button class="secondary-button" id="stopButton" type="button">■ Detener</button>
+      </div>
+    </section>
+
+    <section class="audio-card">
+      <p class="eyebrow compact">Asset</p>
+      <h2>Información</h2>
+      <div id="audioInfo" class="audio-info">No hay audio cargado.</div>
+    </section>
+
+    <section class="audio-card">
+      <p class="eyebrow compact">Organización</p>
+      <h2>Carpetas sugeridas</h2>
+      <div class="folder-grid">
+        <span>SFX</span>
+        <span>Música</span>
+        <span>Ambiente</span>
+        <span>Voz</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
