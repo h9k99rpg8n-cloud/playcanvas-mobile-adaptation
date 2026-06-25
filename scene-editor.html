@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Atlas Engine - Scene Editor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="scene-editor.css" />
+  <script type="module" src="src/app/scene-editor-page.js"></script>
+</head>
+<body>
+  <main class="scene-editor">
+    <canvas id="sceneCanvas"></canvas>
+
+    <header class="scene-topbar">
+      <a class="round-button" href="projects.html">←</a>
+      <div class="scene-title">
+        <span>Atlas Engine 0.0.4</span>
+        <strong id="sceneProjectName">Editor</strong>
+      </div>
+      <button class="round-button" id="resetCameraButton" type="button">⌖</button>
+    </header>
+
+    <button class="panel-handle left" id="inspectorButton" type="button">I</button>
+    <button class="panel-handle right" id="hierarchyButton" type="button">J</button>
+
+    <section class="scene-panel inspector" id="inspectorPanel">
+      <div class="scene-panel-head">
+        <h2>Inspector</h2>
+        <button class="icon-button" id="closeInspectorButton" type="button">✕</button>
+      </div>
+      <div id="inspectorContent"></div>
+    </section>
+
+    <section class="scene-panel hierarchy" id="hierarchyPanel">
+      <div class="scene-panel-head">
+        <h2>Jerarquía</h2>
+        <button class="icon-button" id="closeHierarchyButton" type="button">✕</button>
+      </div>
+      <div id="hierarchyList"></div>
+    </section>
+
+    <footer class="scene-help">Arrastra para girar · Pellizca para zoom</footer>
+  </main>
+</body>
+</html>
