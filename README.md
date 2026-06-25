@@ -8,17 +8,19 @@ https://h9k99rpg8n-cloud.github.io/playcanvas-mobile-adaptation/
 
 ## Versión actual
 
-**0.0.2 — Gestión de proyectos**
+**0.0.3 — Plantillas**
 
-Esta versión agrega la primera administración básica de proyectos:
+Esta versión agrega el flujo de creación por plantillas:
 
-- Crear proyecto.
-- Abrir proyecto activo.
-- Eliminar proyecto activo.
-- Ver proyectos recientes.
-- Guardar proyectos en `localStorage` del navegador.
+- Escena vacía.
+- Juego 3D.
+- Aplicación web.
+- Demo básica.
+- Panel móvil para crear proyecto sin salir de la página.
+- Eliminación por icono en cada proyecto para ahorrar espacio.
+- Guardado de plantilla elegida en `localStorage` del navegador.
 
-Todavía no incluye escena 3D. Esa parte llegará en versiones posteriores.
+La demo básica todavía es solo interfaz; tendrá funcionalidad cuando llegue el editor visual.
 
 ## Arquitectura por módulos
 
@@ -31,9 +33,11 @@ src/
 ├── core/
 │   └── storage.js
 └── modules/
-    └── projects/
-        ├── project-store.js
-        └── project-ui.js
+    ├── projects/
+    │   ├── project-store.js
+    │   └── project-ui.js
+    └── templates/
+        └── template-registry.js
 ```
 
 ## Objetivo
@@ -42,9 +46,10 @@ La idea es construir una experiencia móvil ordenada:
 
 1. **Launcher**: pantalla inicial para entrar al motor.
 2. **Gestión de proyectos**: crear, abrir, eliminar y listar proyectos.
-3. **Editor visual**: escena 3D, cámara táctil, jerarquía, inspector y assets.
-4. **Editor de código**: pantalla para escribir y editar scripts.
-5. **Modo probar juego**: ejecutar la escena en pantalla completa desde el móvil.
+3. **Plantillas**: elegir la base del proyecto antes de abrir el editor.
+4. **Editor visual**: escena 3D, cámara táctil, jerarquía, inspector y assets.
+5. **Editor de código**: pantalla para escribir y editar scripts.
+6. **Modo probar juego**: ejecutar la escena en pantalla completa desde el móvil.
 
 ## Estrategia inicial
 
