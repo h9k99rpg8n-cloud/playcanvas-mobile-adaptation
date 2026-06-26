@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitController } from '../camera/OrbitController.js';
 import { ViewGizmo } from '../gizmos/ViewGizmo.js';
+import { SceneManager } from '../scenemanager/SceneManager.js';
 import { createViewportGrid } from '../grid/viewport-grid.js';
 import { setupViewportEnvironment } from './viewport-environment.js';
 
@@ -13,10 +14,15 @@ export class ViewportRenderer {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     setupViewportEnvironment(this.scene, this.renderer);
     this.scene.add(createViewportGrid());
+    this.sceneManager = new SceneManager(this.scene);
     this.cameraController = new OrbitController(this.camera, canvas);
     this.viewGizmo = gizmoCanvas ? new ViewGizmo(gizmoCanvas, this.camera, this.cameraController) : null;
     this.clock = new THREE.Clock();
     this.animate();
+  }
+
+  addPrimitive(type) {
+    return this.sceneManager.addPrimitive(type);
   }
 
   resize() {
