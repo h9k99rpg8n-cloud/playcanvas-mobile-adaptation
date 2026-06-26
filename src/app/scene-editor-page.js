@@ -1,4 +1,5 @@
 import { ViewportRenderer } from '../modules/viewport/viewport-renderer.js';
+import { ToolboxUI } from '../modules/ui/ToolboxUI.js';
 import { getActiveProject, getProjects, setActiveProject } from '../modules/projects/project-store.js';
 
 function getElement(id) {
@@ -20,4 +21,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const viewport = new ViewportRenderer(getElement('sceneCanvas'), getElement('viewGizmoCanvas'));
   getElement('resetCameraButton').addEventListener('click', () => viewport.cameraController.reset());
+
+  new ToolboxUI({
+    openButton: getElement('toolboxButton'),
+    modal: getElement('toolboxModal'),
+    closeButton: getElement('toolboxCloseButton'),
+    grid: getElement('primitiveGrid'),
+    onCreate: (type) => viewport.addPrimitive(type)
+  });
 });
