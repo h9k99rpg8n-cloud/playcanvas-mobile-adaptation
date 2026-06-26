@@ -18,11 +18,36 @@ export class ViewportRenderer {
     this.cameraController = new OrbitController(this.camera, canvas);
     this.viewGizmo = gizmoCanvas ? new ViewGizmo(gizmoCanvas, this.camera, this.cameraController) : null;
     this.clock = new THREE.Clock();
-    this.animate();
+    this.frameId = null;
+    this.isRunning = false;
+    this.bindVisibilityPause();
+    this.start();
   }
 
   addPrimitive(type) {
     return this.sceneManager.addPrimitive(type);
+  }
+
+  bindVisibilityPause() {
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) this.stop();
+      else this.start();
+    });
+  }
+
+  start() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.clock.getDelta();
+    this.animate();
+  }
+
+  stop() {
+    this.isRunning = false;
+    if (this.frameId !== null) {
+      cancelAnimationFrame(this.frameId);
+      this.frameId = null;
+    }
   }
 
   resize() {
@@ -34,11 +59,12 @@ export class ViewportRenderer {
   }
 
   animate() {
+    if (!this.isRunning) return;
     const delta = this.clock.getDelta();
     this.resize();
     this.cameraController.update(delta);
     this.renderer.render(this.scene, this.camera);
     if (this.viewGizmo) this.viewGizmo.update();
-    requestAnimationFrame(() => this.animate());
+    this.frameId = requestAnimationFrame(() => this.animate());
   }
 }
