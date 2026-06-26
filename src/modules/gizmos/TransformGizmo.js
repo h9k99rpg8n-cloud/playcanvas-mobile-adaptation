@@ -7,10 +7,10 @@ export class TransformGizmo {
     this.orbitController = orbitController;
     this.control = new TransformControls(camera, canvas);
     this.control.setMode('translate');
-    this.control.setSize(0.85);
+    this.control.setSize(1.45);
     this.control.visible = false;
     this.control.addEventListener('dragging-changed', (event) => {
-      this.orbitController.enabled = !event.value;
+      this.orbitController.setEnabled(!event.value);
     });
   }
 
@@ -26,5 +26,6 @@ export class TransformGizmo {
 
   setMode(mode) {
     this.control.setMode(mode);
+    this.control.setSize(mode === 'rotate' ? 1.35 : 1.6);
   }
 }
