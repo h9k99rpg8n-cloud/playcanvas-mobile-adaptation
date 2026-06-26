@@ -17,14 +17,18 @@ export class SceneManager {
     return mesh;
   }
 
-  select(object) {
+  clearSelection() {
     if (this.selectionOutline) {
       this.scene.remove(this.selectionOutline);
       this.selectionOutline.geometry.dispose();
       this.selectionOutline.material.dispose();
       this.selectionOutline = null;
     }
+    this.selected = null;
+  }
 
+  select(object) {
+    this.clearSelection();
     this.selected = object;
     this.selectionOutline = this.createSelectionOutline(object);
     this.scene.add(this.selectionOutline);
