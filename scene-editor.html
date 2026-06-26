@@ -22,15 +22,28 @@
     <header class="scene-topbar">
       <a class="round-button" href="projects.html">←</a>
       <div class="scene-title">
-        <span>Atlas Viewport v0.0.6</span>
+        <span>Atlas Viewport v0.0.7</span>
         <strong id="sceneProjectName">Editor</strong>
       </div>
       <button class="round-button" id="resetCameraButton" type="button">⌖</button>
     </header>
     <canvas class="viewport-gizmo" id="viewGizmoCanvas" width="120" height="120"></canvas>
+    <button class="toolbox-button" id="toolboxButton" type="button" aria-label="Abrir herramientas">🔧</button>
+    <section class="toolbox-modal" id="toolboxModal" hidden>
+      <div class="toolbox-card">
+        <div class="toolbox-header">
+          <div>
+            <p>Básico</p>
+            <h2>Crear objeto</h2>
+          </div>
+          <button class="toolbox-close" id="toolboxCloseButton" type="button">✕</button>
+        </div>
+        <div class="primitive-grid" id="primitiveGrid"></div>
+      </div>
+    </section>
     <aside class="clean-side-slot left"></aside>
     <aside class="clean-side-slot right"></aside>
-    <footer class="scene-help">Cámara premium · Pinch zoom · Gizmo 3D interactivo</footer>
+    <footer class="scene-help">Cámara premium · Crear primitivas · Gizmo 3D interactivo</footer>
   </main>
 </body>
 </html>
