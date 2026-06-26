@@ -46,12 +46,6 @@ export class OrbitController {
     this.canvas.addEventListener('pointermove', (e) => this.handleMove(e));
     this.canvas.addEventListener('pointerup', (e) => this.end(e));
     this.canvas.addEventListener('pointercancel', (e) => this.end(e));
-    this.canvas.addEventListener('wheel', (e) => {
-      if (!this.enabled) return;
-      e.preventDefault();
-      this.targetDistance = clamp(this.targetDistance + e.deltaY * 0.018, 3, 90);
-      this.isMoving = true;
-    }, { passive: false });
   }
 
   handleMove(e) {
