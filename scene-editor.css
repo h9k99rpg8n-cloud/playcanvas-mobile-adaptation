@@ -31,7 +31,9 @@
 .scene-title,
 .viewport-gizmo,
 .clean-side-slot,
-.scene-help {
+.scene-help,
+.toolbox-button,
+.toolbox-card {
   border: 1px solid rgba(255, 255, 255, .18);
   background: rgba(28, 32, 38, .62);
   backdrop-filter: blur(18px);
@@ -91,6 +93,107 @@
   touch-action: none;
 }
 
+.toolbox-button {
+  position: absolute;
+  right: 18px;
+  bottom: max(74px, calc(env(safe-area-inset-bottom) + 74px));
+  z-index: 9;
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 1.45rem;
+}
+
+.toolbox-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(4, 7, 12, .48);
+  opacity: 0;
+  transition: opacity .16s ease;
+}
+
+.toolbox-modal.open {
+  opacity: 1;
+}
+
+.toolbox-modal[hidden] {
+  display: none;
+}
+
+.toolbox-card {
+  width: min(100%, 430px);
+  border-radius: 28px;
+  padding: 18px;
+  transform: translateY(10px) scale(.98);
+  transition: transform .16s ease;
+}
+
+.toolbox-modal.open .toolbox-card {
+  transform: translateY(0) scale(1);
+}
+
+.toolbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.toolbox-header p {
+  margin: 0 0 4px;
+  color: #9ed1ff;
+  font-size: .72rem;
+  font-weight: 950;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.toolbox-header h2 {
+  margin: 0;
+  color: white;
+}
+
+.toolbox-close {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 14px;
+  color: white;
+  background: rgba(255,255,255,.08);
+  font-weight: 900;
+}
+
+.primitive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.primitive-button {
+  min-height: 100px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 20px;
+  padding: 12px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  color: white;
+  background: rgba(255,255,255,.07);
+  font-weight: 900;
+}
+
+.primitive-icon {
+  font-size: 2rem;
+}
+
 .clean-side-slot {
   position: absolute;
   z-index: 4;
@@ -132,4 +235,5 @@
   .scene-topbar { right: 132px; }
   .scene-title span { display: none; }
   .scene-help { font-size: .68rem; }
+  .primitive-grid { grid-template-columns: 1fr 1fr; }
 }
