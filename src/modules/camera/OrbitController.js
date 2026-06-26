@@ -15,6 +15,7 @@ export class OrbitController {
     this.camera = camera;
     this.canvas = canvas;
     this.target = new THREE.Vector3(0, 0, 0);
+    this.enabled = true;
     this.enableDamping = true;
     this.dampingFactor = 0.05;
     this.maxPolarAngle = Math.PI / 2.1;
@@ -36,6 +37,7 @@ export class OrbitController {
 
   bind() {
     this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.enabled) return;
       this.canvas.setPointerCapture(e.pointerId);
       this.touches.set(e.pointerId, e);
       this.drag = { x: e.clientX, y: e.clientY };
@@ -45,6 +47,7 @@ export class OrbitController {
     this.canvas.addEventListener('pointerup', (e) => this.end(e));
     this.canvas.addEventListener('pointercancel', (e) => this.end(e));
     this.canvas.addEventListener('wheel', (e) => {
+      if (!this.enabled) return;
       e.preventDefault();
       this.targetDistance = clamp(this.targetDistance + e.deltaY * 0.018, 3, 90);
       this.isMoving = true;
@@ -52,7 +55,7 @@ export class OrbitController {
   }
 
   handleMove(e) {
-    if (!this.touches.has(e.pointerId)) return;
+    if (!this.enabled || !this.touches.has(e.pointerId)) return;
     this.touches.set(e.pointerId, e);
     if (this.touches.size === 2) {
       const p = Array.from(this.touches.values());
@@ -75,6 +78,15 @@ export class OrbitController {
     this.touches.delete(e.pointerId);
     this.drag = null;
     this.lastPinch = null;
+  }
+
+  setEnabled(value) {
+    this.enabled = value;
+    if (!value) {
+      this.drag = null;
+      this.touches.clear();
+      this.lastPinch = null;
+    }
   }
 
   applyOrbit(instant = false) {
