@@ -36,6 +36,14 @@ function currentProject() {
   return project;
 }
 
+function pickObject(event, viewport, pointer, raycaster) {
+  const rect = viewport.canvas.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, viewport.camera);
+  return raycaster.intersectObjects(viewport.sceneManager.objects, false)[0]?.object || null;
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const project = currentProject();
   $('sceneProjectName').textContent = project?.name || 'Sin proyecto';
@@ -61,18 +69,21 @@ window.addEventListener('DOMContentLoaded', () => {
   scaleBtn.addEventListener('click', () => transform.setMode('scale'));
 
   viewport.canvas.addEventListener('pointerdown', (event) => {
-    const rect = viewport.canvas.getBoundingClientRect();
-    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(pointer, viewport.camera);
-    const hit = raycaster.intersectObjects(viewport.sceneManager.objects, false)[0];
-    if (hit) {
-      viewport.sceneManager.select(hit.object);
-      transform.attach(hit.object);
-    } else {
-      viewport.sceneManager.clearSelection();
-      transform.detach();
+    if (transform.control.dragging) return;
+    const picked = pickObject(event, viewport, pointer, raycaster);
+    if (picked) {
+      viewport.sceneManager.select(picked);
+      transform.attach(picked);
+      return;
     }
+    if (viewport.sceneManager.selected) return;
+    viewport.sceneManager.clearSelection();
+    transform.detach();
+  });
+
+  viewport.canvas.addEventListener('dblclick', () => {
+    viewport.sceneManager.clearSelection();
+    transform.detach();
   });
 
   const render = viewport.renderer.render.bind(viewport.renderer);
