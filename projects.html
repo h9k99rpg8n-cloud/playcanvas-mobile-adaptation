@@ -90,7 +90,9 @@
         <section class="hub-panel empty-view-panel">
           <p class="hub-kicker">Configuración</p>
           <h2>Ajustes de Atlas</h2>
-          <p class="hub-muted">Próximamente tema, rendimiento móvil, librerías y cuenta.</p>
+          <p class="hub-muted">Launcher 0.2.1 y Motor 0.0.10. Ajustes avanzados llegarán en siguientes versiones.</p>
+          <button class="unity-primary-button" id="updateInfoButton" type="button">Actualización</button>
+          <div class="update-summary-panel" id="updateSummaryPanel" hidden></div>
         </section>
       </section>
     </section>
@@ -123,6 +125,9 @@
         </select>
         <label class="field-label" for="installedTemplateSelect">Usar plantilla *</label>
         <select class="text-field" id="installedTemplateSelect" required></select>
+        <label class="field-label" for="projectIconInput">Icono personalizado</label>
+        <input class="text-field file-field" id="projectIconInput" accept="image/png,image/jpeg,image/webp,image/svg+xml" type="file" />
+        <p class="hub-muted tiny-note">Opcional: se guardará junto al proyecto para mostrarlo en el Launcher.</p>
         <button class="unity-primary-button full" id="confirmCreateProjectButton" type="submit">Crear Proyecto</button>
       </form>
     </section>
