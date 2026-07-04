@@ -1,18 +1,32 @@
 @media (max-width: 760px) {
   .hub-shell {
-    padding-bottom: calc(150px + env(safe-area-inset-bottom));
+    padding-bottom: 150px;
   }
 
   .hub-content {
-    padding-bottom: calc(140px + env(safe-area-inset-bottom));
+    padding-bottom: 140px;
   }
 
   #templatesSection {
     margin-bottom: 100px;
   }
 
+  .hub-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hub-header-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hub-search {
+    width: 100%;
+  }
+
   .hub-project-card {
-    grid-template-columns: 42px minmax(0, 1fr) auto;
+    grid-template-columns: 42px minmax(0, 1fr);
     gap: 10px;
   }
 
@@ -26,7 +40,13 @@
     max-width: 100%;
   }
 
+  .hub-project-meta {
+    grid-column: 2;
+  }
+
   .hub-project-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
     flex: 0 0 auto;
   }
 
