@@ -1,9 +1,12 @@
+import { ATLAS_ENGINE_LABEL, ATLAS_LAUNCHER_VERSION, ATLAS_UPDATE_SUMMARY } from '../../core/version.js';
 import { TEMPLATES, getDefaultTemplate } from '../templates/template-registry.js';
 import {
   createProject,
   deleteProject,
+  duplicateProject,
   getActiveProjectId,
   getProjects,
+  renameProject,
   setActiveProject
 } from './project-store.js';
 
@@ -29,11 +32,34 @@ function goToEditor(projectId) {
 }
 
 function getProjectVersion(project) {
-  return project.editorVersion || 'Atlas 0.0.4';
+  return project.editorVersion || ATLAS_ENGINE_LABEL;
 }
 
 function getInstalledTemplates() {
   return TEMPLATES.filter((template) => installedTemplateIds.has(template.id));
+}
+
+function readIconFile(file) {
+  return new Promise((resolve) => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      window.alert('El icono debe ser una imagen.');
+      resolve(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.addEventListener('load', () => resolve(reader.result));
+    reader.addEventListener('error', () => {
+      window.alert('No se pudo importar el icono.');
+      resolve(null);
+    });
+    reader.readAsDataURL(file);
+  });
 }
 
 function switchView(viewId) {
@@ -54,6 +80,17 @@ function switchView(viewId) {
 
   getElement('hubTitle').textContent = titleMap[viewId] || 'Atlas Hub';
   getElement('projectHeaderActions').hidden = viewId !== 'projectsView';
+}
+
+function renderUpdateSummary() {
+  const panel = getElement('updateSummaryPanel');
+  panel.innerHTML = `
+    <div class="update-summary-header">
+      <strong>Atlas Engine ${ATLAS_ENGINE_LABEL}</strong>
+      <small>Launcher ${ATLAS_LAUNCHER_VERSION}</small>
+    </div>
+    <ul>${ATLAS_UPDATE_SUMMARY.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+  `;
 }
 
 function renderTemplateCard(template) {
@@ -127,19 +164,30 @@ function renderInstalledTemplateSelect() {
   `).join('');
 }
 
+function renderProjectIcon(project) {
+  if (project.projectIcon) {
+    return `<span class="hub-project-icon custom"><img src="${project.projectIcon}" alt="" /></span>`;
+  }
+
+  const icon = project.templateIcon || (project.favorite ? '⭐' : '▣');
+  return `<span class="hub-project-icon">${icon}</span>`;
+}
+
 function renderProjectItem(project, activeId) {
   const isActive = project.id === activeId;
-  const icon = project.templateIcon || (project.favorite ? '⭐' : '▣');
 
   return `
     <article class="hub-project-card ${isActive ? 'active' : ''}">
-      <span class="hub-project-icon">${icon}</span>
+      ${renderProjectIcon(project)}
       <button class="project-open-area hub-project-main" data-open-project-id="${project.id}" type="button">
         <strong>${escapeHtml(project.name)}</strong>
         <small>${escapeHtml(project.description || project.template)} · ${escapeHtml(project.gameType || '3D')}</small>
+        <small>Actualizado: ${escapeHtml(project.updatedAt || 'Sin fecha')}</small>
       </button>
       <span class="hub-project-meta">${escapeHtml(getProjectVersion(project))}</span>
       <div class="hub-project-actions">
+        <button class="icon-button" data-rename-project-id="${project.id}" type="button" aria-label="Renombrar proyecto">✎</button>
+        <button class="icon-button" data-duplicate-project-id="${project.id}" type="button" aria-label="Duplicar proyecto">⧉</button>
         <button class="icon-button danger" data-delete-project-id="${project.id}" type="button" aria-label="Eliminar proyecto">🗑️</button>
       </div>
     </article>
@@ -169,6 +217,23 @@ function renderProjects() {
     button.addEventListener('click', () => goToEditor(button.dataset.openProjectId));
   });
 
+  list.querySelectorAll('[data-rename-project-id]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const project = getProjects().find((item) => item.id === button.dataset.renameProjectId);
+      const nextName = window.prompt('Nuevo nombre del proyecto:', project?.name || 'Proyecto Atlas');
+      if (!nextName) return;
+      renameProject(button.dataset.renameProjectId, nextName);
+      renderProjects();
+    });
+  });
+
+  list.querySelectorAll('[data-duplicate-project-id]').forEach((button) => {
+    button.addEventListener('click', () => {
+      duplicateProject(button.dataset.duplicateProjectId);
+      renderProjects();
+    });
+  });
+
   list.querySelectorAll('[data-delete-project-id]').forEach((button) => {
     button.addEventListener('click', () => {
       const project = getProjects().find((item) => item.id === button.dataset.deleteProjectId);
@@ -191,19 +256,21 @@ function closeTemplatePanel() {
   getElement('templatePanel').hidden = true;
 }
 
-function handleCreateProject(event) {
+async function handleCreateProject(event) {
   event.preventDefault();
   const name = getElement('projectNameInput').value.trim();
   const description = getElement('projectDescriptionInput').value.trim();
   const gameType = getElement('gameTypeSelect').value;
   const templateId = getElement('installedTemplateSelect').value;
+  const iconFile = getElement('projectIconInput').files?.[0] || null;
 
   if (!name || !description || !gameType || !templateId) {
     window.alert('Completa todos los campos para crear el proyecto.');
     return;
   }
 
-  const project = createProject({ name, description, gameType, templateId });
+  const projectIcon = await readIconFile(iconFile);
+  const project = createProject({ name, description, gameType, templateId, projectIcon });
   getElement('createProjectForm').reset();
   closeTemplatePanel();
   renderProjects();
@@ -219,6 +286,11 @@ export function mountProjectsPage() {
   getElement('closeTemplatePanelButton').addEventListener('click', closeTemplatePanel);
   getElement('createProjectForm').addEventListener('submit', handleCreateProject);
   getElement('projectSearchInput').addEventListener('input', renderProjects);
+  getElement('updateInfoButton').addEventListener('click', () => {
+    const panel = getElement('updateSummaryPanel');
+    renderUpdateSummary();
+    panel.hidden = !panel.hidden;
+  });
 
   renderTemplates();
   renderMyTemplates();
