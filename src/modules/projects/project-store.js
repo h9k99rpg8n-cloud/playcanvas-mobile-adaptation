@@ -1,4 +1,5 @@
 import { readStorage, writeStorage } from '../../core/storage.js';
+import { ATLAS_ENGINE_LABEL } from '../../core/version.js';
 import { getDefaultTemplate, getTemplateById } from '../templates/template-registry.js';
 
 const PROJECTS_KEY = 'projects';
@@ -15,12 +16,26 @@ function getNowLabel() {
   });
 }
 
+function cloneProjectData(data) {
+  return JSON.parse(JSON.stringify(data || {}));
+}
+
+function normalizeProject(project) {
+  return {
+    ...project,
+    editorVersion: project.editorVersion || ATLAS_ENGINE_LABEL,
+    updatedAt: project.updatedAt || getNowLabel(),
+    data: project.data || { scene: { objects: [], ui: [] } }
+  };
+}
+
 export function getProjects() {
-  return readStorage(PROJECTS_KEY, []);
+  return readStorage(PROJECTS_KEY, []).map(normalizeProject);
 }
 
 export function saveProjects(projects) {
-  return writeStorage(PROJECTS_KEY, projects);
+  const normalized = projects.map(normalizeProject);
+  return writeStorage(PROJECTS_KEY, normalized);
 }
 
 export function createProject(options = {}) {
@@ -36,16 +51,64 @@ export function createProject(options = {}) {
     templateId: template.id,
     template: template.name,
     templateIcon: template.icon,
-    editorVersion: template.editorVersion || 'Atlas 0.0.4',
+    projectIcon: options.projectIcon || null,
+    editorVersion: template.editorVersion || ATLAS_ENGINE_LABEL,
     createdAt: getNowLabel(),
     updatedAt: getNowLabel(),
     favorite: projects.length === 0,
-    data: template.data
+    data: cloneProjectData(template.data)
   };
 
   projects.unshift(project);
   saveProjects(projects);
   setActiveProject(project.id);
+  return project;
+}
+
+export function renameProject(id, nextName) {
+  const cleanName = nextName?.trim();
+  if (!cleanName) return null;
+
+  const projects = getProjects();
+  const project = projects.find((item) => item.id === id);
+  if (!project) return null;
+
+  project.name = cleanName;
+  project.updatedAt = getNowLabel();
+  saveProjects(projects);
+  return project;
+}
+
+export function duplicateProject(id) {
+  const projects = getProjects();
+  const source = projects.find((project) => project.id === id);
+  if (!source) return null;
+
+  const copy = {
+    ...cloneProjectData(source),
+    id: createId(),
+    name: `${source.name} copia`,
+    favorite: false,
+    createdAt: getNowLabel(),
+    updatedAt: getNowLabel(),
+    editorVersion: source.editorVersion || ATLAS_ENGINE_LABEL,
+    data: cloneProjectData(source.data)
+  };
+
+  const sourceIndex = projects.findIndex((project) => project.id === id);
+  projects.splice(sourceIndex + 1, 0, copy);
+  saveProjects(projects);
+  setActiveProject(copy.id);
+  return copy;
+}
+
+export function updateProject(id, patch = {}) {
+  const projects = getProjects();
+  const project = projects.find((item) => item.id === id);
+  if (!project) return null;
+
+  Object.assign(project, patch, { updatedAt: getNowLabel() });
+  saveProjects(projects);
   return project;
 }
 
