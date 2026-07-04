@@ -1,10 +1,12 @@
+import { ATLAS_ENGINE_LABEL } from '../../core/version.js';
+
 export const TEMPLATES = [
   {
     id: 'empty-scene',
     name: 'Escena vacía',
     icon: '⬛',
     description: 'Proyecto limpio para empezar desde cero.',
-    editorVersion: 'Atlas 0.0.4',
+    editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
     data: {
       scene: {
@@ -18,7 +20,7 @@ export const TEMPLATES = [
     name: '2D',
     icon: '🟦',
     description: 'Base para juegos 2D, UI y prototipos ligeros.',
-    editorVersion: 'Atlas 0.0.4',
+    editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
     data: {
       scene: {
@@ -32,7 +34,7 @@ export const TEMPLATES = [
     name: '3D',
     icon: '🎮',
     description: 'Escena 3D básica con cámara, luz y plano.',
-    editorVersion: 'Atlas 0.0.4',
+    editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
     data: {
       scene: {
@@ -46,7 +48,7 @@ export const TEMPLATES = [
     name: '3D HDRP',
     icon: '🌄',
     description: 'Plantilla visual de alto realismo. Próximamente.',
-    editorVersion: 'Atlas 0.1.0',
+    editorVersion: ATLAS_ENGINE_LABEL,
     installed: false,
     data: {
       scene: {
@@ -60,7 +62,7 @@ export const TEMPLATES = [
     name: 'Aplicación web',
     icon: '📱',
     description: 'Base para crear pantallas, botones y menús.',
-    editorVersion: 'Atlas 0.0.4',
+    editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
     data: {
       scene: {
@@ -74,7 +76,7 @@ export const TEMPLATES = [
     name: 'Demo básica',
     icon: '✨',
     description: 'Solo interfaz por ahora; tendrá función con el editor.',
-    editorVersion: 'Atlas 0.0.4',
+    editorVersion: ATLAS_ENGINE_LABEL,
     installed: false,
     data: {
       scene: {
