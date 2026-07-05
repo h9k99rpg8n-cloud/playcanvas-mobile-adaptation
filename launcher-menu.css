@@ -247,8 +247,36 @@
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
 
-.atlas-create-project-form[hidden] {
+.atlas-create-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: end center;
+  padding: 18px;
+  background: rgba(0,0,0,.55);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.atlas-create-modal[hidden] {
   display: none;
+}
+
+.atlas-create-modal.open {
+  opacity: 1;
+}
+
+.atlas-create-modal .atlas-create-project-form {
+  width: min(100%, 460px);
+  max-height: calc(100dvh - 36px);
+  overflow: auto;
+  transform: translateY(22px);
+  transition: transform 160ms ease;
+}
+
+.atlas-create-modal.open .atlas-create-project-form {
+  transform: translateY(0);
 }
 
 .atlas-field-label {
