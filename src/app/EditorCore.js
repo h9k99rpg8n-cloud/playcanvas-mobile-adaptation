@@ -29,11 +29,12 @@ function makeButton(id, label, parent) {
   return el;
 }
 
-function currentProject() {
+async function currentProject() {
   const id = new URLSearchParams(location.search).get('project');
-  const projects = getProjects();
-  const project = projects.find((item) => item.id === id) || getActiveProject() || projects[0] || null;
-  if (project) setActiveProject(project.id);
+  const projects = await getProjects();
+  const active = await getActiveProject();
+  const project = projects.find((item) => item.id === id) || active || projects[0] || null;
+  if (project) await setActiveProject(project.id);
   return project;
 }
 
@@ -51,8 +52,8 @@ function loadProjectScene(project, viewport) {
   viewport.sceneManager.loadSceneData(sceneData);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const project = currentProject();
+window.addEventListener('DOMContentLoaded', async () => {
+  const project = await currentProject();
   $('sceneProjectName').textContent = project?.name || 'Sin proyecto';
 
   const statsBox = makeDiv('fpsMonitor', 'fps-monitor');
