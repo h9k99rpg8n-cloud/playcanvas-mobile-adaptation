@@ -10,8 +10,6 @@
   <script type="module" src="src/app/launcher-app.js"></script>
 </head>
 <body class="atlas-launcher-body">
-  <input class="launcher-menu-toggle" id="launcherMenuToggle" type="checkbox" />
-
   <main class="atlas-launcher-shell">
     <header class="atlas-launcher-header">
       <a class="atlas-logo-block" href="index.html" aria-label="Atlas Engine inicio">
@@ -21,7 +19,6 @@
           <small id="launcherVersionLabel">Launcher 0.2.3 · Atlas 0.0.11.1</small>
         </span>
       </a>
-      <label class="atlas-menu-trigger" for="launcherMenuToggle" aria-label="Abrir menu">☰</label>
     </header>
 
     <section class="atlas-hero-panel" aria-label="Resumen de Atlas Engine">
@@ -30,7 +27,7 @@
       <p class="atlas-subtitle">Crea, organiza y abre mundos 3D desde tu navegador movil.</p>
       <div class="atlas-hero-actions">
         <button class="primary-button launcher-view-button active" data-launcher-target="projects" type="button">Proyectos</button>
-        <label class="secondary-button" for="launcherMenuToggle">Explorar menú</label>
+        <button class="secondary-button" data-launcher-target="templates" type="button">Instalar plantillas</button>
       </div>
     </section>
 
@@ -51,7 +48,27 @@
         <span class="atlas-count-pill"><span id="launcherProjectCount">0</span></span>
       </div>
       <div class="atlas-project-list" id="launcherProjectsList"></div>
-      <a class="primary-button" href="projects.html">Crear o administrar proyectos</a>
+      <button class="primary-button" id="openCreateProjectButton" type="button">Crear nuevo proyecto</button>
+
+      <form class="atlas-create-project-form" id="launcherCreateProjectForm" hidden>
+        <div class="atlas-section-header">
+          <div>
+            <p class="atlas-kicker">Nuevo proyecto</p>
+            <h2>Crear en Atlas</h2>
+          </div>
+          <button class="atlas-mini-button" id="closeCreateProjectButton" type="button">×</button>
+        </div>
+        <label class="atlas-field-label" for="launcherProjectName">Nombre *</label>
+        <input class="atlas-text-field" id="launcherProjectName" maxlength="40" placeholder="Mi mundo Atlas" required />
+        <label class="atlas-field-label" for="launcherProjectDescription">Descripción *</label>
+        <textarea class="atlas-text-field atlas-textarea" id="launcherProjectDescription" maxlength="160" placeholder="Describe tu juego o escena" required></textarea>
+        <label class="atlas-field-label" for="launcherTemplateSelect">Plantilla instalada *</label>
+        <select class="atlas-text-field" id="launcherTemplateSelect" required></select>
+        <p class="launcher-menu-note" id="launcherTemplateHelp">Instala una plantilla en la tienda para poder crear proyectos.</p>
+        <label class="atlas-field-label" for="launcherProjectIcon">Icono personalizado</label>
+        <input class="atlas-text-field" id="launcherProjectIcon" accept="image/png,image/jpeg,image/webp,image/svg+xml" type="file" />
+        <button class="primary-button" type="submit">Crear y abrir editor</button>
+      </form>
     </section>
 
     <section class="atlas-launcher-view" data-launcher-view="templates" aria-label="Plantillas">
@@ -107,7 +124,7 @@
       </article>
       <article class="atlas-info-card">
         <h3>Contador FPS</h3>
-        <p>El contador FPS se configura por proyecto desde el Hub de ajustes.</p>
+        <p>El contador FPS todavía se configura desde el respaldo técnico del Hub.</p>
         <a class="secondary-button" href="projects.html#settingsView">Configurar FPS</a>
       </article>
     </section>
@@ -125,26 +142,5 @@
       </article>
     </section>
   </main>
-
-  <section class="launcher-menu-backdrop">
-    <article class="launcher-bottom-menu" aria-label="Menu de Atlas">
-      <div class="launcher-menu-handle" aria-hidden="true"></div>
-      <div class="launcher-menu-header">
-        <div>
-          <p class="atlas-kicker">Atlas Menu</p>
-          <h2>Panel rápido</h2>
-        </div>
-        <label class="launcher-menu-close" for="launcherMenuToggle">×</label>
-      </div>
-      <nav class="launcher-menu-links">
-        <button data-launcher-target="projects" type="button"><span>▦</span><strong>Gestión de proyectos</strong><small>Abre, crea y administra tus mundos.</small></button>
-        <button data-launcher-target="templates" type="button"><span>▣</span><strong>Plantillas</strong><small>Tienda de plantillas 3D.</small></button>
-        <button data-launcher-target="learn" type="button"><span>?</span><strong>Centro de aprendizaje</strong><small>Próximamente tutoriales paso a paso.</small></button>
-        <button data-launcher-target="settings" type="button"><span>⚙</span><strong>Configuración</strong><small>Tema, FPS por proyecto y actualización.</small></button>
-        <button data-launcher-target="updates" type="button"><span>↑</span><strong>Actualizaciones</strong><small>Resumen de cambios del motor.</small></button>
-      </nav>
-      <p class="launcher-menu-note">Fase 2: navegación real dentro del Launcher.</p>
-    </article>
-  </section>
 </body>
 </html>
