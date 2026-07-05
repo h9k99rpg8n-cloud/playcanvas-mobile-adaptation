@@ -2,9 +2,8 @@ export const TEMPLATE_SCENES = {
   basic3d: {
     scene: {
       objects: [
-        { id: 'camera-main', name: 'Camara principal', type: 'camera', position: [0, 6, 10], rotation: [-28, 0, 0], scale: [1, 1, 1] },
-        { id: 'sun-main', name: 'Luz direccional', type: 'directional-light', position: [6, 8, 4], rotation: [-35, 35, 0], scale: [1, 1, 1] },
-        { id: 'floor-main', name: 'Piso base', type: 'quad', position: [0, 0, 0], rotation: [-90, 0, 0], scale: [8, 8, 1] }
+        { id: 'floor-main', name: 'Piso base', type: 'quad', position: [0, 0, 0], rotation: [-90, 0, 0], scale: [8, 8, 1] },
+        { id: 'starter-cube', name: 'Cubo inicial', type: 'cube', position: [0, 0.6, 0], rotation: [0, 0, 0], scale: [1, 1, 1] }
       ],
       ui: []
     }
@@ -12,13 +11,13 @@ export const TEMPLATE_SCENES = {
   testCar: {
     scene: {
       objects: [
+        { id: 'car-floor', name: 'Pista simple', type: 'quad', position: [0, 0, 0], rotation: [-90, 0, 0], scale: [10, 10, 1] },
         { id: 'car-body', name: 'Carro cuerpo', type: 'cube', position: [0, 1, 0], rotation: [0, 0, 0], scale: [2.4, 0.7, 1.2] },
         { id: 'car-cabin', name: 'Carro cabina', type: 'cube', position: [0.25, 1.65, 0], rotation: [0, 0, 0], scale: [1.1, 0.7, 1] },
         { id: 'wheel-front-left', name: 'Rueda frontal izquierda', type: 'cylinder', position: [0.85, 0.55, 0.7], rotation: [90, 0, 0], scale: [0.45, 0.45, 0.3] },
         { id: 'wheel-front-right', name: 'Rueda frontal derecha', type: 'cylinder', position: [0.85, 0.55, -0.7], rotation: [90, 0, 0], scale: [0.45, 0.45, 0.3] },
         { id: 'wheel-back-left', name: 'Rueda trasera izquierda', type: 'cylinder', position: [-0.85, 0.55, 0.7], rotation: [90, 0, 0], scale: [0.45, 0.45, 0.3] },
-        { id: 'wheel-back-right', name: 'Rueda trasera derecha', type: 'cylinder', position: [-0.85, 0.55, -0.7], rotation: [90, 0, 0], scale: [0.45, 0.45, 0.3] },
-        { id: 'car-floor', name: 'Pista simple', type: 'quad', position: [0, 0, 0], rotation: [-90, 0, 0], scale: [10, 10, 1] }
+        { id: 'wheel-back-right', name: 'Rueda trasera derecha', type: 'cylinder', position: [-0.85, 0.55, -0.7], rotation: [90, 0, 0], scale: [0.45, 0.45, 0.3] }
       ],
       ui: []
     }
