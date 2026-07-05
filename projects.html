@@ -59,7 +59,7 @@
           <div class="hub-section-title">
             <div>
               <p class="hub-kicker">Descargadas</p>
-              <h2>Mis Plantillas</h2>
+              <h2>Mis Plantillas 3D</h2>
             </div>
           </div>
           <div class="my-template-list" id="myTemplateList"></div>
@@ -71,7 +71,7 @@
           <div class="hub-section-title">
             <div>
               <p class="hub-kicker">Tienda</p>
-              <h2>Plantillas</h2>
+              <h2>Plantillas 3D</h2>
             </div>
           </div>
           <div class="hub-template-grid" id="templateGrid"></div>
@@ -90,8 +90,25 @@
         <section class="hub-panel empty-view-panel">
           <p class="hub-kicker">Configuración</p>
           <h2>Ajustes de Atlas</h2>
-          <p class="hub-muted">Launcher 0.2.1 y Motor 0.0.10. Ajustes avanzados llegarán en siguientes versiones.</p>
-          <button class="unity-primary-button" id="updateInfoButton" type="button">Actualización</button>
+          <p class="hub-muted">Launcher 0.2.2 y Motor 0.0.11. Configura el rendimiento por proyecto.</p>
+          <div class="settings-actions">
+            <button class="unity-primary-button" id="fpsSettingsButton" type="button">FPS por proyecto</button>
+            <button class="hub-ghost-button" id="updateInfoButton" type="button">Actualización</button>
+          </div>
+          <div class="fps-settings-panel" id="fpsSettingsPanel" hidden>
+            <div class="hub-section-title compact-title">
+              <div>
+                <p class="hub-kicker">Rendimiento</p>
+                <h2>Mostrar FPS</h2>
+              </div>
+            </div>
+            <p class="hub-muted">Activa el contador FPS solo en los proyectos que quieras probar.</p>
+            <label class="hub-search full-search" for="fpsProjectSearchInput">
+              <span>⌕</span>
+              <input id="fpsProjectSearchInput" placeholder="Buscar proyecto para FPS" />
+            </label>
+            <div class="fps-project-list" id="fpsProjectList"></div>
+          </div>
           <div class="update-summary-panel" id="updateSummaryPanel" hidden></div>
         </section>
       </section>
@@ -108,7 +125,7 @@
       <form class="hub-create-card" id="createProjectForm">
         <div class="hub-section-title">
           <div>
-            <p class="hub-kicker">Nuevo Proyecto</p>
+            <p class="hub-kicker">Nuevo Proyecto 3D</p>
             <h2>Crear proyecto</h2>
           </div>
           <button class="icon-button" id="closeTemplatePanelButton" type="button">✕</button>
@@ -117,13 +134,7 @@
         <input class="text-field" id="projectNameInput" maxlength="40" placeholder="Mi primer mundo" required />
         <label class="field-label" for="projectDescriptionInput">Descripción *</label>
         <textarea class="text-field textarea-field" id="projectDescriptionInput" maxlength="160" placeholder="Describe de qué trata tu juego" required></textarea>
-        <label class="field-label" for="gameTypeSelect">Tipo de juego *</label>
-        <select class="text-field" id="gameTypeSelect" required>
-          <option value="2D">2D</option>
-          <option value="3D" selected>3D</option>
-          <option value="Isométrico">Isométrico</option>
-        </select>
-        <label class="field-label" for="installedTemplateSelect">Usar plantilla *</label>
+        <label class="field-label" for="installedTemplateSelect">Plantilla 3D *</label>
         <select class="text-field" id="installedTemplateSelect" required></select>
         <label class="field-label" for="projectIconInput">Icono personalizado</label>
         <input class="text-field file-field" id="projectIconInput" accept="image/png,image/jpeg,image/webp,image/svg+xml" type="file" />
