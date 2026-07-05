@@ -16,7 +16,7 @@
         <span class="atlas-logo-mark">A</span>
         <span>
           <strong>Atlas Engine</strong>
-          <small id="launcherVersionLabel">Launcher 0.2.3 · Atlas 0.0.11.1</small>
+          <small id="launcherVersionLabel">Launcher 0.2.5 · Atlas 0.0.12.1</small>
         </span>
       </a>
     </header>
@@ -49,26 +49,6 @@
       </div>
       <div class="atlas-project-list" id="launcherProjectsList"></div>
       <button class="primary-button" id="openCreateProjectButton" type="button">Crear nuevo proyecto</button>
-
-      <form class="atlas-create-project-form" id="launcherCreateProjectForm" hidden>
-        <div class="atlas-section-header">
-          <div>
-            <p class="atlas-kicker">Nuevo proyecto</p>
-            <h2>Crear en Atlas</h2>
-          </div>
-          <button class="atlas-mini-button" id="closeCreateProjectButton" type="button">×</button>
-        </div>
-        <label class="atlas-field-label" for="launcherProjectName">Nombre *</label>
-        <input class="atlas-text-field" id="launcherProjectName" maxlength="40" placeholder="Mi mundo Atlas" required />
-        <label class="atlas-field-label" for="launcherProjectDescription">Descripción *</label>
-        <textarea class="atlas-text-field atlas-textarea" id="launcherProjectDescription" maxlength="160" placeholder="Describe tu juego o escena" required></textarea>
-        <label class="atlas-field-label" for="launcherTemplateSelect">Plantilla instalada *</label>
-        <select class="atlas-text-field" id="launcherTemplateSelect" required></select>
-        <p class="launcher-menu-note" id="launcherTemplateHelp">Instala una plantilla en la tienda para poder crear proyectos.</p>
-        <label class="atlas-field-label" for="launcherProjectIcon">Icono personalizado</label>
-        <input class="atlas-text-field" id="launcherProjectIcon" accept="image/png,image/jpeg,image/webp,image/svg+xml" type="file" />
-        <button class="primary-button" type="submit">Crear y abrir editor</button>
-      </form>
     </section>
 
     <section class="atlas-launcher-view" data-launcher-view="templates" aria-label="Plantillas">
@@ -124,8 +104,7 @@
       </article>
       <article class="atlas-info-card">
         <h3>Contador FPS</h3>
-        <p>El contador FPS todavía se configura desde el respaldo técnico del Hub.</p>
-        <a class="secondary-button" href="projects.html#settingsView">Configurar FPS</a>
+        <p>El contador FPS se muestra en la barra superior del editor cuando está activo.</p>
       </article>
     </section>
 
@@ -137,10 +116,32 @@
         </div>
       </div>
       <article class="atlas-info-card">
-        <h3>Atlas 0.0.11.1</h3>
+        <h3>Atlas 0.0.12.1</h3>
         <ul class="atlas-update-list" id="launcherUpdatesList"></ul>
       </article>
     </section>
   </main>
+
+  <section class="atlas-create-modal" id="launcherCreateModal" hidden>
+    <form class="atlas-create-project-form" id="launcherCreateProjectForm">
+      <div class="atlas-section-header">
+        <div>
+          <p class="atlas-kicker">Nuevo proyecto</p>
+          <h2>Crear en Atlas</h2>
+        </div>
+        <button class="atlas-mini-button" id="closeCreateProjectButton" type="button">×</button>
+      </div>
+      <label class="atlas-field-label" for="launcherProjectName">Nombre *</label>
+      <input class="atlas-text-field" id="launcherProjectName" maxlength="40" placeholder="Mi mundo Atlas" required />
+      <label class="atlas-field-label" for="launcherProjectDescription">Descripción *</label>
+      <textarea class="atlas-text-field atlas-textarea" id="launcherProjectDescription" maxlength="160" placeholder="Describe tu juego o escena" required></textarea>
+      <label class="atlas-field-label" for="launcherTemplateSelect">Plantilla</label>
+      <select class="atlas-text-field" id="launcherTemplateSelect" required></select>
+      <p class="launcher-menu-note" id="launcherTemplateHelp">Puedes iniciar vacío o usar una plantilla instalada.</p>
+      <label class="atlas-field-label" for="launcherProjectIcon">Icono personalizado</label>
+      <input class="atlas-text-field" id="launcherProjectIcon" accept="image/png,image/jpeg,image/webp,image/svg+xml" type="file" />
+      <button class="primary-button" type="submit">Crear y abrir editor</button>
+    </form>
+  </section>
 </body>
 </html>
