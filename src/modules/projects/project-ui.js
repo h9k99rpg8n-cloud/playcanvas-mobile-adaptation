@@ -1,5 +1,6 @@
 import { ATLAS_ENGINE_LABEL, ATLAS_LAUNCHER_VERSION, ATLAS_UPDATE_SUMMARY } from '../../core/version.js';
 import { TEMPLATES, getDefaultTemplate } from '../templates/template-registry.js';
+import { renderFpsProjectPicker } from '../settings/fps-settings.js';
 import {
   createProject,
   deleteProject,
@@ -7,7 +8,8 @@ import {
   getActiveProjectId,
   getProjects,
   renameProject,
-  setActiveProject
+  setActiveProject,
+  updateProjectSettings
 } from './project-store.js';
 
 const installedTemplateIds = new Set(TEMPLATES.filter((template) => template.installed).map((template) => template.id));
@@ -93,6 +95,19 @@ function renderUpdateSummary() {
   `;
 }
 
+function renderFpsSettings() {
+  const query = getElement('fpsProjectSearchInput')?.value || '';
+  const list = getElement('fpsProjectList');
+  list.innerHTML = renderFpsProjectPicker(getProjects(), query);
+
+  list.querySelectorAll('[data-fps-project-id]').forEach((input) => {
+    input.addEventListener('change', () => {
+      updateProjectSettings(input.dataset.fpsProjectId, { showFps: input.checked });
+      renderProjects();
+    });
+  });
+}
+
 function renderTemplateCard(template) {
   const installed = installedTemplateIds.has(template.id);
   const action = installed ? '<span class="install-badge">Instalada</span>' : '<button class="install-badge install-action" data-install-template-id="' + template.id + '" type="button">Instalar</button>';
@@ -175,14 +190,16 @@ function renderProjectIcon(project) {
 
 function renderProjectItem(project, activeId) {
   const isActive = project.id === activeId;
+  const fpsBadge = project.settings?.showFps ? '<small class="fps-badge">FPS activo</small>' : '';
 
   return `
     <article class="hub-project-card ${isActive ? 'active' : ''}">
       ${renderProjectIcon(project)}
       <button class="project-open-area hub-project-main" data-open-project-id="${project.id}" type="button">
         <strong>${escapeHtml(project.name)}</strong>
-        <small>${escapeHtml(project.description || project.template)} · ${escapeHtml(project.gameType || '3D')}</small>
+        <small>${escapeHtml(project.description || project.template)} · 3D</small>
         <small>Actualizado: ${escapeHtml(project.updatedAt || 'Sin fecha')}</small>
+        ${fpsBadge}
       </button>
       <span class="hub-project-meta">${escapeHtml(getProjectVersion(project))}</span>
       <div class="hub-project-actions">
@@ -224,6 +241,7 @@ function renderProjects() {
       if (!nextName) return;
       renameProject(button.dataset.renameProjectId, nextName);
       renderProjects();
+      renderFpsSettings();
     });
   });
 
@@ -231,6 +249,7 @@ function renderProjects() {
     button.addEventListener('click', () => {
       duplicateProject(button.dataset.duplicateProjectId);
       renderProjects();
+      renderFpsSettings();
     });
   });
 
@@ -242,6 +261,7 @@ function renderProjects() {
 
       deleteProject(button.dataset.deleteProjectId);
       renderProjects();
+      renderFpsSettings();
     });
   });
 }
@@ -260,20 +280,20 @@ async function handleCreateProject(event) {
   event.preventDefault();
   const name = getElement('projectNameInput').value.trim();
   const description = getElement('projectDescriptionInput').value.trim();
-  const gameType = getElement('gameTypeSelect').value;
   const templateId = getElement('installedTemplateSelect').value;
   const iconFile = getElement('projectIconInput').files?.[0] || null;
 
-  if (!name || !description || !gameType || !templateId) {
+  if (!name || !description || !templateId) {
     window.alert('Completa todos los campos para crear el proyecto.');
     return;
   }
 
   const projectIcon = await readIconFile(iconFile);
-  const project = createProject({ name, description, gameType, templateId, projectIcon });
+  const project = createProject({ name, description, templateId, projectIcon });
   getElement('createProjectForm').reset();
   closeTemplatePanel();
   renderProjects();
+  renderFpsSettings();
   goToEditor(project.id);
 }
 
@@ -286,6 +306,12 @@ export function mountProjectsPage() {
   getElement('closeTemplatePanelButton').addEventListener('click', closeTemplatePanel);
   getElement('createProjectForm').addEventListener('submit', handleCreateProject);
   getElement('projectSearchInput').addEventListener('input', renderProjects);
+  getElement('fpsSettingsButton').addEventListener('click', () => {
+    const panel = getElement('fpsSettingsPanel');
+    panel.hidden = !panel.hidden;
+    renderFpsSettings();
+  });
+  getElement('fpsProjectSearchInput').addEventListener('input', renderFpsSettings);
   getElement('updateInfoButton').addEventListener('click', () => {
     const panel = getElement('updateSummaryPanel');
     renderUpdateSummary();
@@ -296,4 +322,5 @@ export function mountProjectsPage() {
   renderMyTemplates();
   renderInstalledTemplateSelect();
   renderProjects();
+  renderFpsSettings();
 }
