@@ -44,6 +44,12 @@ function pickObject(event, viewport, pointer, raycaster) {
   return raycaster.intersectObjects(viewport.sceneManager.objects, false)[0]?.object || null;
 }
 
+function loadProjectScene(project, viewport) {
+  const sceneData = project?.data?.scene;
+  if (!sceneData) return;
+  viewport.sceneManager.loadSceneData(sceneData);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const project = currentProject();
   $('sceneProjectName').textContent = project?.name || 'Sin proyecto';
@@ -64,6 +70,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const pointer = new THREE.Vector2();
 
   viewport.scene.add(transform.control);
+  loadProjectScene(project, viewport);
+
   $('resetCameraButton').addEventListener('click', () => viewport.cameraController.reset());
   moveBtn.addEventListener('click', () => transform.setMode('translate'));
   rotateBtn.addEventListener('click', () => transform.setMode('rotate'));
