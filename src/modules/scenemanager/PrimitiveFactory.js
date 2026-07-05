@@ -12,7 +12,8 @@ export function createPrimitiveMesh(type) {
     sphere: () => new THREE.SphereGeometry(0.5, 32, 20),
     capsule: () => new THREE.CapsuleGeometry(0.35, 0.9, 8, 16),
     cylinder: () => new THREE.CylinderGeometry(0.5, 0.5, 1, 32),
-    quad: () => new THREE.PlaneGeometry(1, 1)
+    quad: () => new THREE.PlaneGeometry(1, 1),
+    torus: () => new THREE.TorusGeometry(0.45, 0.16, 16, 48)
   };
 
   const geometryFactory = geometryMap[type] || geometryMap.cube;
