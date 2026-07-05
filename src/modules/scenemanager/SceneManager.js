@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createPrimitiveMesh } from './PrimitiveFactory.js';
+import { createPrimitiveMesh } from '../rendering/PrimitiveFactory.js';
 
 const PRIMITIVE_TYPES = new Set(['cube', 'sphere', 'capsule', 'cylinder', 'quad', 'torus']);
 
@@ -53,14 +53,8 @@ export class SceneManager extends EventTarget {
   }
 
   addSceneObject(objectData = {}) {
-    if (!PRIMITIVE_TYPES.has(objectData.type)) {
-      return null;
-    }
-
-    return this.addPrimitive(objectData.type, {
-      ...objectData,
-      select: false
-    });
+    if (!PRIMITIVE_TYPES.has(objectData.type)) return null;
+    return this.addPrimitive(objectData.type, { ...objectData, select: false });
   }
 
   loadSceneData(sceneData = {}) {
