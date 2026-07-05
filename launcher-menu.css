@@ -2,12 +2,6 @@
   background: #020612;
 }
 
-.launcher-menu-toggle {
-  position: fixed;
-  opacity: 0;
-  pointer-events: none;
-}
-
 .atlas-launcher-shell {
   min-height: 100dvh;
   width: min(100%, 460px);
@@ -65,21 +59,9 @@
   font-weight: 800;
 }
 
-.atlas-menu-trigger {
-  width: 48px;
-  height: 48px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  display: grid;
-  place-items: center;
-  color: white;
-  background: rgba(255,255,255,.06);
-  font-size: 1.45rem;
-  font-weight: 950;
-}
-
 .atlas-hero-panel,
-.atlas-launcher-view {
+.atlas-launcher-view,
+.atlas-create-project-form {
   border: 1px solid var(--line);
   border-radius: 28px;
   padding: 22px;
@@ -116,6 +98,7 @@
 
 .atlas-hero-actions,
 .atlas-project-list,
+.atlas-create-project-form,
 .atlas-store-card + .atlas-store-card {
   display: grid;
   gap: 10px;
@@ -264,6 +247,42 @@
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
 
+.atlas-create-project-form[hidden] {
+  display: none;
+}
+
+.atlas-field-label {
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 950;
+}
+
+.atlas-text-field {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(0,200,255,.18);
+  border-radius: 15px;
+  padding: 10px 12px;
+  color: white;
+  background: rgba(255,255,255,.06);
+  outline: none;
+}
+
+.atlas-textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.atlas-mini-button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: white;
+  background: rgba(255,255,255,.07);
+  font-size: 1.35rem;
+}
+
 .atlas-store-card {
   padding: 14px;
   display: grid;
@@ -327,118 +346,4 @@
   padding-left: 20px;
   color: var(--muted);
   line-height: 1.65;
-}
-
-.launcher-menu-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: grid;
-  align-items: end;
-  padding: 18px;
-  background: rgba(0, 0, 0, 0.55);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 180ms ease;
-}
-
-.launcher-menu-toggle:checked ~ .launcher-menu-backdrop {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.launcher-bottom-menu {
-  width: min(100%, 460px);
-  margin: 0 auto;
-  padding: 12px 16px max(18px, env(safe-area-inset-bottom));
-  border: 1px solid var(--line);
-  border-radius: 30px 30px 24px 24px;
-  background: linear-gradient(160deg, rgba(8,14,28,.98), rgba(2,6,18,.99));
-  box-shadow: var(--shadow);
-  transform: translateY(24px);
-  transition: transform 180ms ease;
-}
-
-.launcher-menu-toggle:checked ~ .launcher-menu-backdrop .launcher-bottom-menu {
-  transform: translateY(0);
-}
-
-.launcher-menu-handle {
-  width: 48px;
-  height: 5px;
-  margin: 0 auto 14px;
-  border-radius: 99px;
-  background: rgba(255,255,255,.25);
-}
-
-.launcher-menu-header {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.launcher-menu-close {
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  color: white;
-  background: rgba(255,255,255,.07);
-  font-size: 1.5rem;
-}
-
-.launcher-menu-links {
-  display: grid;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.launcher-menu-links button {
-  min-height: 68px;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  display: grid;
-  grid-template-columns: 34px 1fr;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  text-align: left;
-  background: rgba(255,255,255,.055);
-}
-
-.launcher-menu-links button.active {
-  border-color: rgba(0,200,255,.44);
-  background: rgba(0,124,255,.18);
-}
-
-.launcher-menu-links button span {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: rgba(0,200,255,.12);
-}
-
-.launcher-menu-links button strong,
-.launcher-menu-links button small {
-  display: block;
-  grid-column: 2;
-}
-
-.launcher-menu-links button small {
-  color: var(--muted);
-  font-size: .74rem;
-  line-height: 1.35;
-}
-
-.launcher-menu-note {
-  margin: 14px 4px 0;
-  color: var(--muted);
-  font-size: .78rem;
-  line-height: 1.45;
 }
