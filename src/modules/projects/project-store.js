@@ -23,8 +23,12 @@ function cloneProjectData(data) {
 function normalizeProject(project) {
   return {
     ...project,
+    gameType: '3D',
     editorVersion: project.editorVersion || ATLAS_ENGINE_LABEL,
     updatedAt: project.updatedAt || getNowLabel(),
+    settings: {
+      showFps: Boolean(project.settings?.showFps)
+    },
     data: project.data || { scene: { objects: [], ui: [] } }
   };
 }
@@ -47,7 +51,7 @@ export function createProject(options = {}) {
     id: createId(),
     name: cleanName,
     description: options.description?.trim() || 'Sin descripción',
-    gameType: options.gameType || '3D',
+    gameType: '3D',
     templateId: template.id,
     template: template.name,
     templateIcon: template.icon,
@@ -56,6 +60,9 @@ export function createProject(options = {}) {
     createdAt: getNowLabel(),
     updatedAt: getNowLabel(),
     favorite: projects.length === 0,
+    settings: {
+      showFps: false
+    },
     data: cloneProjectData(template.data)
   };
 
@@ -92,6 +99,7 @@ export function duplicateProject(id) {
     createdAt: getNowLabel(),
     updatedAt: getNowLabel(),
     editorVersion: source.editorVersion || ATLAS_ENGINE_LABEL,
+    settings: cloneProjectData(source.settings || { showFps: false }),
     data: cloneProjectData(source.data)
   };
 
@@ -108,6 +116,20 @@ export function updateProject(id, patch = {}) {
   if (!project) return null;
 
   Object.assign(project, patch, { updatedAt: getNowLabel() });
+  saveProjects(projects);
+  return project;
+}
+
+export function updateProjectSettings(id, nextSettings = {}) {
+  const projects = getProjects();
+  const project = projects.find((item) => item.id === id);
+  if (!project) return null;
+
+  project.settings = {
+    ...project.settings,
+    ...nextSettings
+  };
+  project.updatedAt = getNowLabel();
   saveProjects(projects);
   return project;
 }
