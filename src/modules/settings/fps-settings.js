@@ -1,3 +1,12 @@
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
 export function projectMatchesFpsSearch(project, query) {
   const cleanQuery = query.trim().toLowerCase();
   if (!cleanQuery) return true;
@@ -23,10 +32,10 @@ export function renderFpsProjectPicker(projects, query = '') {
 
   return filtered.map((project) => `
     <label class="fps-project-option">
-      <input type="checkbox" data-fps-project-id="${project.id}" ${isProjectFpsEnabled(project) ? 'checked' : ''} />
+      <input type="checkbox" data-fps-project-id="${escapeHtml(project.id)}" ${isProjectFpsEnabled(project) ? 'checked' : ''} />
       <span>
-        <strong>${project.name}</strong>
-        <small>${project.template || 'Plantilla 3D'} · ${project.editorVersion || 'Atlas'}</small>
+        <strong>${escapeHtml(project.name)}</strong>
+        <small>${escapeHtml(project.template || 'Plantilla 3D')} · ${escapeHtml(project.editorVersion || 'Atlas')}</small>
       </span>
     </label>
   `).join('');
