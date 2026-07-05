@@ -1,249 +1,129 @@
-import { readStorage, writeStorage } from '../core/storage.js';
+import { readStorage, writeStorage } from '../modules/data/Storage.js';
 import { ATLAS_ENGINE_LABEL, ATLAS_LAUNCHER_VERSION, ATLAS_UPDATE_SUMMARY } from '../core/version.js';
 import { TEMPLATES } from '../modules/templates/template-registry.js';
-import { createProject } from '../modules/projects/project-store.js';
+import { createProject, deleteProject, duplicateProject, getProjects, renameProject } from '../modules/data/ProjectStore.js';
 
 const $ = (id) => document.getElementById(id);
-const views = Array.from(document.querySelectorAll('[data-launcher-view]'));
-const navButtons = Array.from(document.querySelectorAll('[data-launcher-target]'));
-const projectsList = $('launcherProjectsList');
-const updatesList = $('launcherUpdatesList');
-const projectCount = $('launcherProjectCount');
-const installButtons = Array.from(document.querySelectorAll('[data-install-template]'));
-const createModal = $('launcherCreateModal');
-const createForm = $('launcherCreateProjectForm');
-const openCreateButton = $('openCreateProjectButton');
-const closeCreateButton = $('closeCreateProjectButton');
-const templateSelect = $('launcherTemplateSelect');
-const templateHelp = $('launcherTemplateHelp');
+const views = [...document.querySelectorAll('[data-launcher-view]')];
+const nav = [...document.querySelectorAll('[data-launcher-target]')];
+const installedKey = 'launcher-installed-templates';
 
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+function safe(value) {
+  return String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 }
 
-function getProjects() {
-  return readStorage('projects', []);
+function showView(id) {
+  views.forEach((view) => view.classList.toggle('active', view.dataset.launcherView === id));
+  nav.forEach((button) => button.classList.toggle('active', button.dataset.launcherTarget === id));
 }
 
-function getInstalledTemplates() {
-  return readStorage('launcher-installed-templates', []);
-}
-
-function saveInstalledTemplates(templateIds) {
-  writeStorage('launcher-installed-templates', templateIds);
-}
-
-function showView(viewId) {
-  views.forEach((view) => {
-    view.classList.toggle('active', view.dataset.launcherView === viewId);
-  });
-
-  navButtons.forEach((button) => {
-    button.classList.toggle('active', button.dataset.launcherTarget === viewId);
-  });
-}
-
-function readIconFile(file) {
+function readFile(file) {
   return new Promise((resolve) => {
-    if (!file) {
-      resolve(null);
-      return;
-    }
-
-    if (!file.type.startsWith('image/')) {
-      window.alert('El icono debe ser una imagen.');
-      resolve(null);
-      return;
-    }
-
+    if (!file || !file.type.startsWith('image/')) return resolve(null);
     const reader = new FileReader();
-    reader.addEventListener('load', () => resolve(reader.result));
-    reader.addEventListener('error', () => {
-      window.alert('No se pudo importar el icono.');
-      resolve(null);
-    });
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => resolve(null);
     reader.readAsDataURL(file);
   });
 }
 
-function renderProjects() {
-  const projects = getProjects();
-  if (projectCount) projectCount.textContent = String(projects.length);
-
-  if (!projectsList) return;
-
-  if (projects.length === 0) {
-    projectsList.innerHTML = `
-      <article class="atlas-project-empty-card">
-        <span>◇</span>
-        <h3>No hay proyectos todavía</h3>
-        <p>Crea un proyecto vacío o instala una plantilla para comenzar.</p>
-      </article>
-    `;
-    return;
-  }
-
-  projectsList.innerHTML = projects.slice(0, 6).map((project) => {
-    const icon = project.projectIcon
-      ? `<img src="${project.projectIcon}" alt="" />`
-      : `<span>${escapeHtml(project.templateIcon || '◇')}</span>`;
-
-    return `
-      <article class="atlas-project-card">
-        <div class="atlas-project-icon">${icon}</div>
-        <div class="atlas-project-info">
-          <h3>${escapeHtml(project.name)}</h3>
-          <p>${escapeHtml(project.description || project.template || 'Proyecto 3D')}</p>
-          <div class="atlas-project-data">
-            <small>Creado: ${escapeHtml(project.createdAt || 'Sin fecha')}</small>
-            <small>Última revisión: ${escapeHtml(project.updatedAt || 'Sin fecha')}</small>
-            <small>Versión: ${escapeHtml(project.editorVersion || ATLAS_ENGINE_LABEL)}</small>
-          </div>
-        </div>
-        <a class="atlas-open-project" href="scene-editor.html?project=${encodeURIComponent(project.id)}">Abrir</a>
-      </article>
-    `;
-  }).join('');
+async function installedTemplates() {
+  return new Set(await readStorage(installedKey, []));
 }
 
-function renderUpdates() {
-  if (!updatesList) return;
-  updatesList.innerHTML = ATLAS_UPDATE_SUMMARY.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
-
-  const launcherVersion = $('launcherVersionLabel');
-  if (launcherVersion) launcherVersion.textContent = `Launcher ${ATLAS_LAUNCHER_VERSION} · ${ATLAS_ENGINE_LABEL}`;
+async function saveInstalled(set) {
+  await writeStorage(installedKey, [...set]);
 }
 
-function getTemplate(templateId) {
-  return TEMPLATES.find((template) => template.id === templateId) || null;
-}
-
-function renderTemplateSelect() {
-  if (!templateSelect) return;
-  const installedIds = new Set(getInstalledTemplates());
-  const availableTemplates = TEMPLATES.filter((template) => template.id === 'empty-scene' || installedIds.has(template.id));
-
-  templateSelect.disabled = false;
-  templateSelect.innerHTML = availableTemplates.map((template) => `
-    <option value="${escapeHtml(template.id)}">${escapeHtml(template.name)}</option>
-  `).join('');
-
-  if (templateHelp) templateHelp.textContent = 'Escena vacía siempre está disponible. Las demás aparecen al instalarlas.';
-}
-
-function setTemplateState(templateId, state) {
-  const card = document.querySelector(`[data-template-card="${templateId}"]`);
-  const status = document.querySelector(`[data-template-status="${templateId}"]`);
-  const button = document.querySelector(`[data-install-template="${templateId}"]`);
-  const progress = document.querySelector(`[data-template-progress="${templateId}"]`);
-
-  if (!card || !status || !button || !progress) return;
-
-  card.dataset.state = state;
-
-  if (state === 'installed') {
-    status.textContent = 'Instalada';
-    button.textContent = 'Instalada';
-    button.disabled = true;
-    progress.classList.remove('running');
-    progress.querySelector('span').style.width = '100%';
-    return;
-  }
-
-  if (state === 'installing') {
-    status.textContent = 'Instalando';
-    button.textContent = 'Instalando...';
-    button.disabled = true;
-    progress.classList.add('running');
-    progress.querySelector('span').style.width = '100%';
-    return;
-  }
-
-  status.textContent = 'No instalada';
-  button.textContent = 'Instalar';
-  button.disabled = false;
-  progress.classList.remove('running');
-  progress.querySelector('span').style.width = '0%';
-}
-
-function renderTemplateStates() {
-  const installed = new Set(getInstalledTemplates());
-  installButtons.forEach((button) => {
-    const templateId = button.dataset.installTemplate;
-    setTemplateState(templateId, installed.has(templateId) ? 'installed' : 'not-installed');
+async function renderTemplates() {
+  const set = await installedTemplates();
+  document.querySelectorAll('[data-install-template]').forEach((button) => {
+    const id = button.dataset.installTemplate;
+    const status = document.querySelector(`[data-template-status="${id}"]`);
+    const progress = document.querySelector(`[data-template-progress="${id}"] span`);
+    const installed = set.has(id);
+    button.textContent = installed ? 'Instalada' : 'Instalar';
+    button.disabled = installed;
+    if (status) status.textContent = installed ? 'Instalada' : 'No instalada';
+    if (progress) progress.style.width = installed ? '100%' : '0%';
   });
-  renderTemplateSelect();
-}
 
-function installTemplate(templateId) {
-  setTemplateState(templateId, 'installing');
-
-  window.setTimeout(() => {
-    const installed = new Set(getInstalledTemplates());
-    installed.add(templateId);
-    saveInstalledTemplates(Array.from(installed));
-    setTemplateState(templateId, 'installed');
-    renderTemplateSelect();
-  }, 900);
-}
-
-function openCreateProjectForm() {
-  renderTemplateSelect();
-  createModal.hidden = false;
-  requestAnimationFrame(() => createModal.classList.add('open'));
-  $('launcherProjectName').focus();
-}
-
-function closeCreateProjectForm() {
-  createModal.classList.remove('open');
-  window.setTimeout(() => {
-    createModal.hidden = true;
-  }, 160);
-}
-
-async function handleCreateProject(event) {
-  event.preventDefault();
-
-  const name = $('launcherProjectName').value.trim();
-  const description = $('launcherProjectDescription').value.trim();
-  const templateId = templateSelect.value || 'empty-scene';
-  const template = getTemplate(templateId);
-  const iconFile = $('launcherProjectIcon').files?.[0] || null;
-
-  if (!name || !description || !template) {
-    window.alert('Completa el nombre y la descripción para crear el proyecto.');
-    return;
+  const select = $('launcherTemplateSelect');
+  if (select) {
+    select.innerHTML = TEMPLATES
+      .filter((template) => template.id === 'empty-scene' || set.has(template.id))
+      .map((template) => `<option value="${safe(template.id)}">${safe(template.name)}</option>`)
+      .join('');
   }
+}
 
-  const projectIcon = await readIconFile(iconFile);
-  const project = createProject({ name, description, templateId, projectIcon });
-  createForm.reset();
-  closeCreateProjectForm();
-  renderProjects();
+function card(project) {
+  const icon = project.projectIcon ? `<img src="${project.projectIcon}" alt="" />` : `<span>${safe(project.templateIcon || '◇')}</span>`;
+  return `<article class="atlas-project-card"><div class="atlas-project-icon">${icon}</div><div class="atlas-project-info"><h3>${safe(project.name)}</h3><p>${safe(project.description || project.template || 'Proyecto 3D')}</p><div class="atlas-project-data"><small>Actualizado: ${safe(project.updatedAt || 'Sin fecha')}</small><small>${safe(project.editorVersion || ATLAS_ENGINE_LABEL)}</small></div></div><div class="atlas-project-actions"><a class="atlas-open-project" href="scene-editor.html?project=${encodeURIComponent(project.id)}">Abrir</a><button class="atlas-project-menu-button" data-menu="${safe(project.id)}" type="button">⋯</button><div class="atlas-project-menu" data-options="${safe(project.id)}" hidden><button data-rename="${safe(project.id)}" type="button">Renombrar</button><button data-copy="${safe(project.id)}" type="button">Duplicar</button><button data-remove="${safe(project.id)}" type="button">Eliminar</button></div></div></article>`;
+}
+
+async function renderProjects() {
+  const list = $('launcherProjectsList');
+  const projects = await getProjects();
+  if ($('launcherProjectCount')) $('launcherProjectCount').textContent = String(projects.length);
+  if (!list) return;
+
+  list.innerHTML = projects.length ? projects.map(card).join('') : '<article class="atlas-project-empty-card"><span>◇</span><h3>No hay proyectos todavía</h3><p>Crea una escena vacía o instala una plantilla.</p></article>';
+
+  list.querySelectorAll('[data-menu]').forEach((button) => button.onclick = () => {
+    const menu = list.querySelector(`[data-options="${button.dataset.menu}"]`);
+    document.querySelectorAll('.atlas-project-menu').forEach((item) => { if (item !== menu) item.hidden = true; });
+    menu.hidden = !menu.hidden;
+  });
+
+  list.querySelectorAll('[data-rename]').forEach((button) => button.onclick = async () => {
+    const project = projects.find((item) => item.id === button.dataset.rename);
+    const name = prompt('Nuevo nombre:', project?.name || 'Proyecto Atlas');
+    if (name) await renameProject(button.dataset.rename, name);
+    await renderProjects();
+  });
+
+  list.querySelectorAll('[data-copy]').forEach((button) => button.onclick = async () => {
+    await duplicateProject(button.dataset.copy);
+    await renderProjects();
+  });
+
+  list.querySelectorAll('[data-remove]').forEach((button) => button.onclick = async () => {
+    const project = projects.find((item) => item.id === button.dataset.remove);
+    if (confirm(`¿Eliminar "${project?.name || 'este proyecto'}"?`)) await deleteProject(button.dataset.remove);
+    await renderProjects();
+  });
+}
+
+async function openCreate() {
+  await renderTemplates();
+  $('launcherCreateModal').hidden = false;
+  requestAnimationFrame(() => $('launcherCreateModal').classList.add('open'));
+}
+
+function closeCreate() {
+  $('launcherCreateModal').classList.remove('open');
+  setTimeout(() => $('launcherCreateModal').hidden = true, 160);
+}
+
+async function createFromForm(event) {
+  event.preventDefault();
+  const icon = await readFile($('launcherProjectIcon').files?.[0]);
+  const project = await createProject({ name: $('launcherProjectName').value, description: $('launcherProjectDescription').value, templateId: $('launcherTemplateSelect').value, projectIcon: icon });
   location.assign('scene-editor.html?project=' + encodeURIComponent(project.id));
 }
 
-navButtons.forEach((button) => {
-  button.addEventListener('click', () => showView(button.dataset.launcherTarget));
-});
+async function boot() {
+  nav.forEach((button) => button.onclick = () => showView(button.dataset.launcherTarget));
+  document.querySelectorAll('[data-install-template]').forEach((button) => button.onclick = async () => { const set = await installedTemplates(); set.add(button.dataset.installTemplate); await saveInstalled(set); await renderTemplates(); });
+  $('openCreateProjectButton')?.addEventListener('click', openCreate);
+  $('closeCreateProjectButton')?.addEventListener('click', closeCreate);
+  $('launcherCreateProjectForm')?.addEventListener('submit', createFromForm);
+  if ($('launcherUpdatesList')) $('launcherUpdatesList').innerHTML = ATLAS_UPDATE_SUMMARY.map((item) => `<li>${safe(item)}</li>`).join('');
+  if ($('launcherVersionLabel')) $('launcherVersionLabel').textContent = `Launcher ${ATLAS_LAUNCHER_VERSION} · ${ATLAS_ENGINE_LABEL}`;
+  await renderTemplates();
+  await renderProjects();
+  showView('projects');
+}
 
-installButtons.forEach((button) => {
-  button.addEventListener('click', () => installTemplate(button.dataset.installTemplate));
-});
-
-if (openCreateButton) openCreateButton.addEventListener('click', openCreateProjectForm);
-if (closeCreateButton) closeCreateButton.addEventListener('click', closeCreateProjectForm);
-if (createModal) createModal.addEventListener('click', (event) => {
-  if (event.target === createModal) closeCreateProjectForm();
-});
-if (createForm) createForm.addEventListener('submit', handleCreateProject);
-
-renderProjects();
-renderUpdates();
-renderTemplateStates();
-showView('projects');
+boot();
