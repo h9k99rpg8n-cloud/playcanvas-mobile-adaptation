@@ -7,6 +7,7 @@
   <title>Atlas Engine</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="launcher-menu.css" />
+  <script type="module" src="src/app/launcher-app.js"></script>
 </head>
 <body class="atlas-launcher-body">
   <input class="launcher-menu-toggle" id="launcherMenuToggle" type="checkbox" />
@@ -17,52 +18,109 @@
         <span class="atlas-logo-mark">A</span>
         <span>
           <strong>Atlas Engine</strong>
-          <small>Motor grafico web movil</small>
+          <small id="launcherVersionLabel">Launcher 0.2.3 · Atlas 0.0.11.1</small>
         </span>
       </a>
       <label class="atlas-menu-trigger" for="launcherMenuToggle" aria-label="Abrir menu">☰</label>
     </header>
 
     <section class="atlas-hero-panel" aria-label="Resumen de Atlas Engine">
-      <p class="atlas-kicker">Launcher 0.2.3 · Atlas 0.0.11.1</p>
+      <p class="atlas-kicker">Motor grafico web movil</p>
       <h1>Atlas Engine</h1>
       <p class="atlas-subtitle">Crea, organiza y abre mundos 3D desde tu navegador movil.</p>
       <div class="atlas-hero-actions">
-        <a class="primary-button" href="projects.html">Abrir gestión de proyectos</a>
+        <button class="primary-button launcher-view-button active" data-launcher-target="projects" type="button">Proyectos</button>
         <label class="secondary-button" for="launcherMenuToggle">Explorar menú</label>
       </div>
     </section>
 
-    <section class="atlas-projects-panel" aria-label="Tus proyectos">
+    <nav class="atlas-launcher-tabs" aria-label="Navegacion del launcher">
+      <button class="active" data-launcher-target="projects" type="button">Proyectos</button>
+      <button data-launcher-target="templates" type="button">Plantillas</button>
+      <button data-launcher-target="learn" type="button">Aprender</button>
+      <button data-launcher-target="settings" type="button">Configuración</button>
+      <button data-launcher-target="updates" type="button">Actualizaciones</button>
+    </nav>
+
+    <section class="atlas-launcher-view active" data-launcher-view="projects" aria-label="Proyectos">
       <div class="atlas-section-header">
         <div>
           <p class="atlas-kicker">Tus proyectos</p>
           <h2>Gestión rápida</h2>
         </div>
-        <a class="atlas-small-link" href="projects.html">Ver todo</a>
+        <span class="atlas-count-pill"><span id="launcherProjectCount">0</span></span>
       </div>
+      <div class="atlas-project-list" id="launcherProjectsList"></div>
+      <a class="primary-button" href="projects.html">Crear o administrar proyectos</a>
+    </section>
 
-      <article class="atlas-project-empty-card">
-        <span>◇</span>
-        <h3>No hay proyectos cargados aquí todavía</h3>
-        <p>Abre la gestión de proyectos para crear, revisar, duplicar o configurar tus mundos de Atlas.</p>
-        <a class="primary-button" href="projects.html">Crear nuevo proyecto</a>
+    <section class="atlas-launcher-view" data-launcher-view="templates" aria-label="Plantillas">
+      <div class="atlas-section-header">
+        <div>
+          <p class="atlas-kicker">Tienda</p>
+          <h2>Plantillas 3D</h2>
+        </div>
+      </div>
+      <article class="atlas-store-card">
+        <span>🚗</span>
+        <div>
+          <h3>Carrito de prueba</h3>
+          <p>Plantilla con primitivas para probar composición 3D. Instalación real en la siguiente parte.</p>
+        </div>
+        <a href="projects.html#templatesView">Ver</a>
       </article>
+      <article class="atlas-store-card">
+        <span>🌳</span>
+        <div>
+          <h3>Jardín 3D</h3>
+          <p>Escena simple para probar rendimiento con objetos básicos.</p>
+        </div>
+        <a href="projects.html#templatesView">Ver</a>
+      </article>
+    </section>
 
-      <div class="atlas-project-meta-grid" aria-label="Datos que mostrará cada proyecto">
+    <section class="atlas-launcher-view" data-launcher-view="learn" aria-label="Aprender">
+      <div class="atlas-section-header">
         <div>
-          <small>Fecha creada</small>
-          <strong>Disponible en Gestión</strong>
-        </div>
-        <div>
-          <small>Última revisión</small>
-          <strong>Disponible en Gestión</strong>
-        </div>
-        <div>
-          <small>Versión</small>
-          <strong>Atlas 0.0.11.1</strong>
+          <p class="atlas-kicker">Aprender</p>
+          <h2>Centro de aprendizaje</h2>
         </div>
       </div>
+      <article class="atlas-info-card">
+        <h3>Próximamente</h3>
+        <p>Aquí vivirán tutoriales paso por paso para crear proyectos, usar primitivas, configurar FPS y exportar juegos web.</p>
+      </article>
+    </section>
+
+    <section class="atlas-launcher-view" data-launcher-view="settings" aria-label="Configuración">
+      <div class="atlas-section-header">
+        <div>
+          <p class="atlas-kicker">Configuración</p>
+          <h2>Atlas</h2>
+        </div>
+      </div>
+      <article class="atlas-info-card">
+        <h3>Apariencia</h3>
+        <p>Tema actual: negro profesional. El gris clásico se agregará en una fase posterior.</p>
+      </article>
+      <article class="atlas-info-card">
+        <h3>Contador FPS</h3>
+        <p>El contador FPS se configura por proyecto desde el Hub de ajustes.</p>
+        <a class="secondary-button" href="projects.html#settingsView">Configurar FPS</a>
+      </article>
+    </section>
+
+    <section class="atlas-launcher-view" data-launcher-view="updates" aria-label="Actualizaciones">
+      <div class="atlas-section-header">
+        <div>
+          <p class="atlas-kicker">Actualización</p>
+          <h2>Resumen</h2>
+        </div>
+      </div>
+      <article class="atlas-info-card">
+        <h3>Atlas 0.0.11.1</h3>
+        <ul class="atlas-update-list" id="launcherUpdatesList"></ul>
+      </article>
     </section>
   </main>
 
@@ -77,12 +135,13 @@
         <label class="launcher-menu-close" for="launcherMenuToggle">×</label>
       </div>
       <nav class="launcher-menu-links">
-        <a href="projects.html"><span>▦</span><strong>Gestión de proyectos</strong><small>Abre, crea y administra tus mundos.</small></a>
-        <a href="projects.html#templatesView"><span>▣</span><strong>Plantillas</strong><small>Tienda de plantillas 3D.</small></a>
-        <a href="projects.html#learnView"><span>?</span><strong>Centro de aprendizaje</strong><small>Próximamente tutoriales paso a paso.</small></a>
-        <a href="projects.html#settingsView"><span>⚙</span><strong>Configuración</strong><small>Tema, FPS por proyecto y actualización.</small></a>
+        <button data-launcher-target="projects" type="button"><span>▦</span><strong>Gestión de proyectos</strong><small>Abre, crea y administra tus mundos.</small></button>
+        <button data-launcher-target="templates" type="button"><span>▣</span><strong>Plantillas</strong><small>Tienda de plantillas 3D.</small></button>
+        <button data-launcher-target="learn" type="button"><span>?</span><strong>Centro de aprendizaje</strong><small>Próximamente tutoriales paso a paso.</small></button>
+        <button data-launcher-target="settings" type="button"><span>⚙</span><strong>Configuración</strong><small>Tema, FPS por proyecto y actualización.</small></button>
+        <button data-launcher-target="updates" type="button"><span>↑</span><strong>Actualizaciones</strong><small>Resumen de cambios del motor.</small></button>
       </nav>
-      <p class="launcher-menu-note">Corrección visual del Launcher. El motor 3D no se toca en esta fase.</p>
+      <p class="launcher-menu-note">Fase 2: navegación real dentro del Launcher.</p>
     </article>
   </section>
 </body>
