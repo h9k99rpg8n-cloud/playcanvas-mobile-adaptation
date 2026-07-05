@@ -6,8 +6,11 @@
   <meta name="theme-color" content="#0b1020" />
   <title>Atlas Engine</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="launcher-menu.css" />
 </head>
 <body>
+  <input class="launcher-menu-toggle" id="launcherMenuToggle" type="checkbox" />
+
   <main class="launcher-screen">
     <section class="hero-card" aria-label="Launcher de Atlas Engine">
       <div class="logo-mark" aria-hidden="true">
@@ -22,7 +25,7 @@
       </p>
 
       <a class="primary-button" href="projects.html">Entrar</a>
-      <button class="secondary-button launcher-menu-button" id="launcherMenuButton" type="button">Menú</button>
+      <label class="secondary-button launcher-menu-button" for="launcherMenuToggle">Menú</label>
 
       <p class="footer-note">
         Launcher 0.2.2 - Motor 0.0.11. Proyecto open source bajo licencia MIT.
@@ -30,48 +33,24 @@
     </section>
   </main>
 
-  <section class="launcher-menu-backdrop" id="launcherMenuBackdrop" hidden>
-    <article class="launcher-bottom-menu" aria-label="Menú de Atlas">
+  <section class="launcher-menu-backdrop">
+    <article class="launcher-bottom-menu" aria-label="Menu de Atlas">
       <div class="launcher-menu-handle" aria-hidden="true"></div>
       <div class="launcher-menu-header">
         <div>
           <p class="eyebrow compact">Atlas Menu</p>
-          <h2>Accesos rápidos</h2>
+          <h2>Accesos rapidos</h2>
         </div>
-        <button class="launcher-menu-close" id="launcherMenuClose" type="button">×</button>
+        <label class="launcher-menu-close" for="launcherMenuToggle">x</label>
       </div>
       <nav class="launcher-menu-links">
-        <a href="projects.html">▦ Proyectos</a>
-        <a href="projects.html#templatesView">▣ Plantillas 3D</a>
-        <a href="projects.html#settingsView">⚙ Ajustes</a>
-        <a href="projects.html#learnView">? Aprender</a>
+        <a href="projects.html">Proyectos</a>
+        <a href="projects.html#templatesView">Plantillas 3D</a>
+        <a href="projects.html#settingsView">Ajustes</a>
+        <a href="projects.html#learnView">Aprender</a>
       </nav>
       <p class="footer-note">Atlas 0.0.11 prepara plantillas 3D y FPS por proyecto.</p>
     </article>
   </section>
-
-  <script>
-    const menuButton = document.getElementById('launcherMenuButton');
-    const menuBackdrop = document.getElementById('launcherMenuBackdrop');
-    const menuClose = document.getElementById('launcherMenuClose');
-
-    function openLauncherMenu() {
-      menuBackdrop.hidden = false;
-      requestAnimationFrame(() => menuBackdrop.classList.add('open'));
-    }
-
-    function closeLauncherMenu() {
-      menuBackdrop.classList.remove('open');
-      window.setTimeout(() => {
-        menuBackdrop.hidden = true;
-      }, 180);
-    }
-
-    menuButton.addEventListener('click', openLauncherMenu);
-    menuClose.addEventListener('click', closeLauncherMenu);
-    menuBackdrop.addEventListener('click', (event) => {
-      if (event.target === menuBackdrop) closeLauncherMenu();
-    });
-  </script>
 </body>
 </html>
