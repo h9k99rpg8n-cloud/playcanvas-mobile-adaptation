@@ -20,34 +20,38 @@ function cloneProjectData(data) {
   return JSON.parse(JSON.stringify(data || {}));
 }
 
-function normalizeProject(project) {
+function normalizeProject(project = {}) {
   return {
     ...project,
     gameType: '3D',
     editorVersion: project.editorVersion || ATLAS_ENGINE_LABEL,
+    createdAt: project.createdAt || getNowLabel(),
     updatedAt: project.updatedAt || getNowLabel(),
     settings: {
-      showFps: Boolean(project.settings?.showFps)
+      showFps: Boolean(project.settings?.showFps),
+      ...(project.settings || {})
     },
+    assets: Array.isArray(project.assets) ? project.assets : [],
     data: project.data || { scene: { objects: [], ui: [] } }
   };
 }
 
-export function getProjects() {
-  return readStorage(PROJECTS_KEY, []).map(normalizeProject);
+export async function getProjects() {
+  const projects = await readStorage(PROJECTS_KEY, []);
+  return Array.isArray(projects) ? projects.map(normalizeProject) : [];
 }
 
-export function saveProjects(projects) {
+export async function saveProjects(projects) {
   const normalized = projects.map(normalizeProject);
   return writeStorage(PROJECTS_KEY, normalized);
 }
 
-export function createProject(options = {}) {
-  const projects = getProjects();
+export async function createProject(options = {}) {
+  const projects = await getProjects();
   const template = getTemplateById(options.templateId || getDefaultTemplate().id);
   const cleanName = options.name?.trim() || `${template.name} ${projects.length + 1}`;
 
-  const project = {
+  const project = normalizeProject({
     id: createId(),
     name: cleanName,
     description: options.description?.trim() || 'Sin descripción',
@@ -60,38 +64,37 @@ export function createProject(options = {}) {
     createdAt: getNowLabel(),
     updatedAt: getNowLabel(),
     favorite: projects.length === 0,
-    settings: {
-      showFps: false
-    },
+    settings: { showFps: false },
+    assets: [],
     data: cloneProjectData(template.data)
-  };
+  });
 
   projects.unshift(project);
-  saveProjects(projects);
-  setActiveProject(project.id);
+  await saveProjects(projects);
+  await setActiveProject(project.id);
   return project;
 }
 
-export function renameProject(id, nextName) {
+export async function renameProject(id, nextName) {
   const cleanName = nextName?.trim();
   if (!cleanName) return null;
 
-  const projects = getProjects();
+  const projects = await getProjects();
   const project = projects.find((item) => item.id === id);
   if (!project) return null;
 
   project.name = cleanName;
   project.updatedAt = getNowLabel();
-  saveProjects(projects);
-  return project;
+  await saveProjects(projects);
+  return normalizeProject(project);
 }
 
-export function duplicateProject(id) {
-  const projects = getProjects();
+export async function duplicateProject(id) {
+  const projects = await getProjects();
   const source = projects.find((project) => project.id === id);
   if (!source) return null;
 
-  const copy = {
+  const copy = normalizeProject({
     ...cloneProjectData(source),
     id: createId(),
     name: `${source.name} copia`,
@@ -100,28 +103,29 @@ export function duplicateProject(id) {
     updatedAt: getNowLabel(),
     editorVersion: source.editorVersion || ATLAS_ENGINE_LABEL,
     settings: cloneProjectData(source.settings || { showFps: false }),
+    assets: cloneProjectData(source.assets || []),
     data: cloneProjectData(source.data)
-  };
+  });
 
   const sourceIndex = projects.findIndex((project) => project.id === id);
   projects.splice(sourceIndex + 1, 0, copy);
-  saveProjects(projects);
-  setActiveProject(copy.id);
+  await saveProjects(projects);
+  await setActiveProject(copy.id);
   return copy;
 }
 
-export function updateProject(id, patch = {}) {
-  const projects = getProjects();
+export async function updateProject(id, patch = {}) {
+  const projects = await getProjects();
   const project = projects.find((item) => item.id === id);
   if (!project) return null;
 
   Object.assign(project, patch, { updatedAt: getNowLabel() });
-  saveProjects(projects);
-  return project;
+  await saveProjects(projects);
+  return normalizeProject(project);
 }
 
-export function updateProjectSettings(id, nextSettings = {}) {
-  const projects = getProjects();
+export async function updateProjectSettings(id, nextSettings = {}) {
+  const projects = await getProjects();
   const project = projects.find((item) => item.id === id);
   if (!project) return null;
 
@@ -130,30 +134,31 @@ export function updateProjectSettings(id, nextSettings = {}) {
     ...nextSettings
   };
   project.updatedAt = getNowLabel();
-  saveProjects(projects);
-  return project;
+  await saveProjects(projects);
+  return normalizeProject(project);
 }
 
-export function deleteProject(id) {
-  const projects = getProjects().filter((project) => project.id !== id);
-  saveProjects(projects);
+export async function deleteProject(id) {
+  const projects = (await getProjects()).filter((project) => project.id !== id);
+  await saveProjects(projects);
 
-  if (getActiveProjectId() === id) {
-    setActiveProject(projects[0]?.id || null);
+  if ((await getActiveProjectId()) === id) {
+    await setActiveProject(projects[0]?.id || null);
   }
 
   return projects;
 }
 
-export function setActiveProject(id) {
-  writeStorage(ACTIVE_PROJECT_KEY, id);
+export async function setActiveProject(id) {
+  return writeStorage(ACTIVE_PROJECT_KEY, id);
 }
 
-export function getActiveProjectId() {
+export async function getActiveProjectId() {
   return readStorage(ACTIVE_PROJECT_KEY, null);
 }
 
-export function getActiveProject() {
-  const activeId = getActiveProjectId();
-  return getProjects().find((project) => project.id === activeId) || null;
+export async function getActiveProject() {
+  const activeId = await getActiveProjectId();
+  const projects = await getProjects();
+  return projects.find((project) => project.id === activeId) || null;
 }
