@@ -50,6 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const statsBox = makeDiv('fpsMonitor', 'fps-monitor');
   statsBox.textContent = '-- FPS · -- MS';
+  if (!project?.settings?.showFps) statsBox.hidden = true;
 
   const modeBar = makeDiv('transformModeBar', 'transform-mode-bar');
   const moveBtn = makeButton('moveModeButton', 'Mover', modeBar);
