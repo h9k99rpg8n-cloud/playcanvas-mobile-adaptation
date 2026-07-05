@@ -1,14 +1,20 @@
 import { readStorage, writeStorage } from '../core/storage.js';
 import { ATLAS_ENGINE_LABEL, ATLAS_LAUNCHER_VERSION, ATLAS_UPDATE_SUMMARY } from '../core/version.js';
+import { TEMPLATES } from '../modules/templates/template-registry.js';
+import { createProject } from '../modules/projects/project-store.js';
 
 const $ = (id) => document.getElementById(id);
-const menuToggle = $('launcherMenuToggle');
 const views = Array.from(document.querySelectorAll('[data-launcher-view]'));
 const navButtons = Array.from(document.querySelectorAll('[data-launcher-target]'));
 const projectsList = $('launcherProjectsList');
 const updatesList = $('launcherUpdatesList');
 const projectCount = $('launcherProjectCount');
 const installButtons = Array.from(document.querySelectorAll('[data-install-template]'));
+const createForm = $('launcherCreateProjectForm');
+const openCreateButton = $('openCreateProjectButton');
+const closeCreateButton = $('closeCreateProjectButton');
+const templateSelect = $('launcherTemplateSelect');
+const templateHelp = $('launcherTemplateHelp');
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -31,10 +37,6 @@ function saveInstalledTemplates(templateIds) {
   writeStorage('launcher-installed-templates', templateIds);
 }
 
-function closeMenu() {
-  if (menuToggle) menuToggle.checked = false;
-}
-
 function showView(viewId) {
   views.forEach((view) => {
     view.classList.toggle('active', view.dataset.launcherView === viewId);
@@ -43,8 +45,29 @@ function showView(viewId) {
   navButtons.forEach((button) => {
     button.classList.toggle('active', button.dataset.launcherTarget === viewId);
   });
+}
 
-  closeMenu();
+function readIconFile(file) {
+  return new Promise((resolve) => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      window.alert('El icono debe ser una imagen.');
+      resolve(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.addEventListener('load', () => resolve(reader.result));
+    reader.addEventListener('error', () => {
+      window.alert('No se pudo importar el icono.');
+      resolve(null);
+    });
+    reader.readAsDataURL(file);
+  });
 }
 
 function renderProjects() {
@@ -59,7 +82,6 @@ function renderProjects() {
         <span>◇</span>
         <h3>No hay proyectos todavía</h3>
         <p>Crea un nuevo proyecto para comenzar a construir mundos 3D desde Atlas.</p>
-        <a class="primary-button" href="projects.html">Crear nuevo proyecto</a>
       </article>
     `;
     return;
@@ -94,6 +116,29 @@ function renderUpdates() {
 
   const launcherVersion = $('launcherVersionLabel');
   if (launcherVersion) launcherVersion.textContent = `Launcher ${ATLAS_LAUNCHER_VERSION} · ${ATLAS_ENGINE_LABEL}`;
+}
+
+function getTemplate(templateId) {
+  return TEMPLATES.find((template) => template.id === templateId) || null;
+}
+
+function renderTemplateSelect() {
+  if (!templateSelect) return;
+  const installedIds = new Set(getInstalledTemplates());
+  const installedTemplates = TEMPLATES.filter((template) => installedIds.has(template.id));
+
+  if (installedTemplates.length === 0) {
+    templateSelect.innerHTML = '<option value="">Instala una plantilla primero</option>';
+    templateSelect.disabled = true;
+    if (templateHelp) templateHelp.textContent = 'No hay plantillas instaladas. Ve a Plantillas e instala una antes de crear un proyecto.';
+    return;
+  }
+
+  templateSelect.disabled = false;
+  templateSelect.innerHTML = installedTemplates.map((template) => `
+    <option value="${escapeHtml(template.id)}">${escapeHtml(template.name)}</option>
+  `).join('');
+  if (templateHelp) templateHelp.textContent = 'Solo aparecen plantillas instaladas desde la tienda del Launcher.';
 }
 
 function setTemplateState(templateId, state) {
@@ -137,6 +182,7 @@ function renderTemplateStates() {
     const templateId = button.dataset.installTemplate;
     setTemplateState(templateId, installed.has(templateId) ? 'installed' : 'not-installed');
   });
+  renderTemplateSelect();
 }
 
 function installTemplate(templateId) {
@@ -147,7 +193,40 @@ function installTemplate(templateId) {
     installed.add(templateId);
     saveInstalledTemplates(Array.from(installed));
     setTemplateState(templateId, 'installed');
+    renderTemplateSelect();
   }, 900);
+}
+
+function openCreateProjectForm() {
+  renderTemplateSelect();
+  createForm.hidden = false;
+  $('launcherProjectName').focus();
+}
+
+function closeCreateProjectForm() {
+  createForm.hidden = true;
+}
+
+async function handleCreateProject(event) {
+  event.preventDefault();
+
+  const name = $('launcherProjectName').value.trim();
+  const description = $('launcherProjectDescription').value.trim();
+  const templateId = templateSelect.value;
+  const template = getTemplate(templateId);
+  const iconFile = $('launcherProjectIcon').files?.[0] || null;
+
+  if (!name || !description || !templateId || !template) {
+    window.alert('Completa el formulario e instala una plantilla antes de crear el proyecto.');
+    return;
+  }
+
+  const projectIcon = await readIconFile(iconFile);
+  const project = createProject({ name, description, templateId, projectIcon });
+  createForm.reset();
+  closeCreateProjectForm();
+  renderProjects();
+  location.assign('scene-editor.html?project=' + encodeURIComponent(project.id));
 }
 
 navButtons.forEach((button) => {
@@ -157,6 +236,10 @@ navButtons.forEach((button) => {
 installButtons.forEach((button) => {
   button.addEventListener('click', () => installTemplate(button.dataset.installTemplate));
 });
+
+if (openCreateButton) openCreateButton.addEventListener('click', openCreateProjectForm);
+if (closeCreateButton) closeCreateButton.addEventListener('click', closeCreateProjectForm);
+if (createForm) createForm.addEventListener('submit', handleCreateProject);
 
 renderProjects();
 renderUpdates();
