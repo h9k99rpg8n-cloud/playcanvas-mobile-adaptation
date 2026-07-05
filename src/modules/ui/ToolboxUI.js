@@ -3,7 +3,8 @@ const PRIMITIVES = [
   { type: 'sphere', label: 'Esfera', icon: '⚽' },
   { type: 'capsule', label: 'Cápsula', icon: '💊' },
   { type: 'cylinder', label: 'Cilindro', icon: '🧪' },
-  { type: 'quad', label: 'Quad', icon: '🖼️' }
+  { type: 'quad', label: 'Quad', icon: '🖼️' },
+  { type: 'torus', label: 'Toroide', icon: '⭕' }
 ];
 
 export class ToolboxUI {
