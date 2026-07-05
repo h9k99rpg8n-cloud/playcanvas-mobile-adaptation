@@ -1,4 +1,4 @@
-import { readStorage } from '../core/storage.js';
+import { readStorage, writeStorage } from '../core/storage.js';
 import { ATLAS_ENGINE_LABEL, ATLAS_LAUNCHER_VERSION, ATLAS_UPDATE_SUMMARY } from '../core/version.js';
 
 const $ = (id) => document.getElementById(id);
@@ -8,6 +8,7 @@ const navButtons = Array.from(document.querySelectorAll('[data-launcher-target]'
 const projectsList = $('launcherProjectsList');
 const updatesList = $('launcherUpdatesList');
 const projectCount = $('launcherProjectCount');
+const installButtons = Array.from(document.querySelectorAll('[data-install-template]'));
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -20,6 +21,14 @@ function escapeHtml(value) {
 
 function getProjects() {
   return readStorage('projects', []);
+}
+
+function getInstalledTemplates() {
+  return readStorage('launcher-installed-templates', []);
+}
+
+function saveInstalledTemplates(templateIds) {
+  writeStorage('launcher-installed-templates', templateIds);
 }
 
 function closeMenu() {
@@ -87,10 +96,69 @@ function renderUpdates() {
   if (launcherVersion) launcherVersion.textContent = `Launcher ${ATLAS_LAUNCHER_VERSION} · ${ATLAS_ENGINE_LABEL}`;
 }
 
+function setTemplateState(templateId, state) {
+  const card = document.querySelector(`[data-template-card="${templateId}"]`);
+  const status = document.querySelector(`[data-template-status="${templateId}"]`);
+  const button = document.querySelector(`[data-install-template="${templateId}"]`);
+  const progress = document.querySelector(`[data-template-progress="${templateId}"]`);
+
+  if (!card || !status || !button || !progress) return;
+
+  card.dataset.state = state;
+
+  if (state === 'installed') {
+    status.textContent = 'Instalada';
+    button.textContent = 'Instalada';
+    button.disabled = true;
+    progress.classList.remove('running');
+    progress.querySelector('span').style.width = '100%';
+    return;
+  }
+
+  if (state === 'installing') {
+    status.textContent = 'Instalando';
+    button.textContent = 'Instalando...';
+    button.disabled = true;
+    progress.classList.add('running');
+    progress.querySelector('span').style.width = '100%';
+    return;
+  }
+
+  status.textContent = 'No instalada';
+  button.textContent = 'Instalar';
+  button.disabled = false;
+  progress.classList.remove('running');
+  progress.querySelector('span').style.width = '0%';
+}
+
+function renderTemplateStates() {
+  const installed = new Set(getInstalledTemplates());
+  installButtons.forEach((button) => {
+    const templateId = button.dataset.installTemplate;
+    setTemplateState(templateId, installed.has(templateId) ? 'installed' : 'not-installed');
+  });
+}
+
+function installTemplate(templateId) {
+  setTemplateState(templateId, 'installing');
+
+  window.setTimeout(() => {
+    const installed = new Set(getInstalledTemplates());
+    installed.add(templateId);
+    saveInstalledTemplates(Array.from(installed));
+    setTemplateState(templateId, 'installed');
+  }, 900);
+}
+
 navButtons.forEach((button) => {
   button.addEventListener('click', () => showView(button.dataset.launcherTarget));
 });
 
+installButtons.forEach((button) => {
+  button.addEventListener('click', () => installTemplate(button.dataset.installTemplate));
+});
+
 renderProjects();
 renderUpdates();
+renderTemplateStates();
 showView('projects');
