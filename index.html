@@ -3,33 +3,66 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1020" />
+  <meta name="theme-color" content="#020612" />
   <title>Atlas Engine</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="launcher-menu.css" />
 </head>
-<body>
+<body class="atlas-launcher-body">
   <input class="launcher-menu-toggle" id="launcherMenuToggle" type="checkbox" />
 
-  <main class="launcher-screen">
-    <section class="hero-card" aria-label="Launcher de Atlas Engine">
-      <div class="logo-mark" aria-hidden="true">
-        <span class="logo-orbit"></span>
-        <span class="logo-core">AE</span>
+  <main class="atlas-launcher-shell">
+    <header class="atlas-launcher-header">
+      <a class="atlas-logo-block" href="index.html" aria-label="Atlas Engine inicio">
+        <span class="atlas-logo-mark">A</span>
+        <span>
+          <strong>Atlas Engine</strong>
+          <small>Motor grafico web movil</small>
+        </span>
+      </a>
+      <label class="atlas-menu-trigger" for="launcherMenuToggle" aria-label="Abrir menu">☰</label>
+    </header>
+
+    <section class="atlas-hero-panel" aria-label="Resumen de Atlas Engine">
+      <p class="atlas-kicker">Launcher 0.2.3 · Atlas 0.0.11.1</p>
+      <h1>Atlas Engine</h1>
+      <p class="atlas-subtitle">Crea, organiza y abre mundos 3D desde tu navegador movil.</p>
+      <div class="atlas-hero-actions">
+        <a class="primary-button" href="projects.html">Abrir gestión de proyectos</a>
+        <label class="secondary-button" for="launcherMenuToggle">Explorar menú</label>
+      </div>
+    </section>
+
+    <section class="atlas-projects-panel" aria-label="Tus proyectos">
+      <div class="atlas-section-header">
+        <div>
+          <p class="atlas-kicker">Tus proyectos</p>
+          <h2>Gestión rápida</h2>
+        </div>
+        <a class="atlas-small-link" href="projects.html">Ver todo</a>
       </div>
 
-      <p class="eyebrow">Motor grafico web movil</p>
-      <h1>Atlas Engine</h1>
-      <p class="subtitle">
-        Crea, edita y prueba mundos 3D desde tu navegador movil.
-      </p>
+      <article class="atlas-project-empty-card">
+        <span>◇</span>
+        <h3>No hay proyectos cargados aquí todavía</h3>
+        <p>Abre la gestión de proyectos para crear, revisar, duplicar o configurar tus mundos de Atlas.</p>
+        <a class="primary-button" href="projects.html">Crear nuevo proyecto</a>
+      </article>
 
-      <a class="primary-button" href="projects.html">Entrar</a>
-      <label class="secondary-button launcher-menu-button" for="launcherMenuToggle">Menú</label>
-
-      <p class="footer-note">
-        Launcher 0.2.2 - Motor 0.0.11. Proyecto open source bajo licencia MIT.
-      </p>
+      <div class="atlas-project-meta-grid" aria-label="Datos que mostrará cada proyecto">
+        <div>
+          <small>Fecha creada</small>
+          <strong>Disponible en Gestión</strong>
+        </div>
+        <div>
+          <small>Última revisión</small>
+          <strong>Disponible en Gestión</strong>
+        </div>
+        <div>
+          <small>Versión</small>
+          <strong>Atlas 0.0.11.1</strong>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -38,18 +71,18 @@
       <div class="launcher-menu-handle" aria-hidden="true"></div>
       <div class="launcher-menu-header">
         <div>
-          <p class="eyebrow compact">Atlas Menu</p>
-          <h2>Accesos rapidos</h2>
+          <p class="atlas-kicker">Atlas Menu</p>
+          <h2>Panel rápido</h2>
         </div>
-        <label class="launcher-menu-close" for="launcherMenuToggle">x</label>
+        <label class="launcher-menu-close" for="launcherMenuToggle">×</label>
       </div>
       <nav class="launcher-menu-links">
-        <a href="projects.html">Proyectos</a>
-        <a href="projects.html#templatesView">Plantillas 3D</a>
-        <a href="projects.html#settingsView">Ajustes</a>
-        <a href="projects.html#learnView">Aprender</a>
+        <a href="projects.html"><span>▦</span><strong>Gestión de proyectos</strong><small>Abre, crea y administra tus mundos.</small></a>
+        <a href="projects.html#templatesView"><span>▣</span><strong>Plantillas</strong><small>Tienda de plantillas 3D.</small></a>
+        <a href="projects.html#learnView"><span>?</span><strong>Centro de aprendizaje</strong><small>Próximamente tutoriales paso a paso.</small></a>
+        <a href="projects.html#settingsView"><span>⚙</span><strong>Configuración</strong><small>Tema, FPS por proyecto y actualización.</small></a>
       </nav>
-      <p class="footer-note">Atlas 0.0.11 prepara plantillas 3D y FPS por proyecto.</p>
+      <p class="launcher-menu-note">Corrección visual del Launcher. El motor 3D no se toca en esta fase.</p>
     </article>
   </section>
 </body>
