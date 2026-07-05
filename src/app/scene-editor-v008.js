@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { ViewportRenderer } from '../modules/viewport/viewport-renderer.js';
 import { ToolboxUI } from '../modules/ui/ToolboxUI.js';
 import { TransformGizmo } from '../modules/gizmos/TransformGizmo.js';
+import { HierarchyPanel } from '../modules/hierarchy/HierarchyPanel.js';
 import { StatsMonitor } from '../modules/utils/StatsMonitor.js';
 import { getActiveProject, getProjects, setActiveProject } from '../modules/projects/project-store.js';
 
@@ -65,6 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const viewport = new ViewportRenderer($('sceneCanvas'), $('viewGizmoCanvas'));
   const transform = new TransformGizmo(viewport.camera, viewport.canvas, viewport.cameraController);
+  new HierarchyPanel({ sceneManager: viewport.sceneManager, transformGizmo: transform });
   const stats = new StatsMonitor(statsBox);
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
