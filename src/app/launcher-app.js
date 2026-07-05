@@ -10,6 +10,7 @@ const projectsList = $('launcherProjectsList');
 const updatesList = $('launcherUpdatesList');
 const projectCount = $('launcherProjectCount');
 const installButtons = Array.from(document.querySelectorAll('[data-install-template]'));
+const createModal = $('launcherCreateModal');
 const createForm = $('launcherCreateProjectForm');
 const openCreateButton = $('openCreateProjectButton');
 const closeCreateButton = $('closeCreateProjectButton');
@@ -81,7 +82,7 @@ function renderProjects() {
       <article class="atlas-project-empty-card">
         <span>◇</span>
         <h3>No hay proyectos todavía</h3>
-        <p>Crea un nuevo proyecto para comenzar a construir mundos 3D desde Atlas.</p>
+        <p>Crea un proyecto vacío o instala una plantilla para comenzar.</p>
       </article>
     `;
     return;
@@ -125,20 +126,14 @@ function getTemplate(templateId) {
 function renderTemplateSelect() {
   if (!templateSelect) return;
   const installedIds = new Set(getInstalledTemplates());
-  const installedTemplates = TEMPLATES.filter((template) => installedIds.has(template.id));
-
-  if (installedTemplates.length === 0) {
-    templateSelect.innerHTML = '<option value="">Instala una plantilla primero</option>';
-    templateSelect.disabled = true;
-    if (templateHelp) templateHelp.textContent = 'No hay plantillas instaladas. Ve a Plantillas e instala una antes de crear un proyecto.';
-    return;
-  }
+  const availableTemplates = TEMPLATES.filter((template) => template.id === 'empty-scene' || installedIds.has(template.id));
 
   templateSelect.disabled = false;
-  templateSelect.innerHTML = installedTemplates.map((template) => `
+  templateSelect.innerHTML = availableTemplates.map((template) => `
     <option value="${escapeHtml(template.id)}">${escapeHtml(template.name)}</option>
   `).join('');
-  if (templateHelp) templateHelp.textContent = 'Solo aparecen plantillas instaladas desde la tienda del Launcher.';
+
+  if (templateHelp) templateHelp.textContent = 'Escena vacía siempre está disponible. Las demás aparecen al instalarlas.';
 }
 
 function setTemplateState(templateId, state) {
@@ -199,12 +194,16 @@ function installTemplate(templateId) {
 
 function openCreateProjectForm() {
   renderTemplateSelect();
-  createForm.hidden = false;
+  createModal.hidden = false;
+  requestAnimationFrame(() => createModal.classList.add('open'));
   $('launcherProjectName').focus();
 }
 
 function closeCreateProjectForm() {
-  createForm.hidden = true;
+  createModal.classList.remove('open');
+  window.setTimeout(() => {
+    createModal.hidden = true;
+  }, 160);
 }
 
 async function handleCreateProject(event) {
@@ -212,12 +211,12 @@ async function handleCreateProject(event) {
 
   const name = $('launcherProjectName').value.trim();
   const description = $('launcherProjectDescription').value.trim();
-  const templateId = templateSelect.value;
+  const templateId = templateSelect.value || 'empty-scene';
   const template = getTemplate(templateId);
   const iconFile = $('launcherProjectIcon').files?.[0] || null;
 
-  if (!name || !description || !templateId || !template) {
-    window.alert('Completa el formulario e instala una plantilla antes de crear el proyecto.');
+  if (!name || !description || !template) {
+    window.alert('Completa el nombre y la descripción para crear el proyecto.');
     return;
   }
 
@@ -239,6 +238,9 @@ installButtons.forEach((button) => {
 
 if (openCreateButton) openCreateButton.addEventListener('click', openCreateProjectForm);
 if (closeCreateButton) closeCreateButton.addEventListener('click', closeCreateProjectForm);
+if (createModal) createModal.addEventListener('click', (event) => {
+  if (event.target === createModal) closeCreateProjectForm();
+});
 if (createForm) createForm.addEventListener('submit', handleCreateProject);
 
 renderProjects();
