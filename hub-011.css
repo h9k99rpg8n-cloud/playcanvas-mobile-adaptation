@@ -1,0 +1,69 @@
+.settings-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.compact-title {
+  margin-bottom: 8px;
+}
+
+.full-search {
+  width: 100%;
+  margin: 12px 0;
+}
+
+.fps-settings-panel {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--unity-border);
+  border-radius: 16px;
+  background: var(--unity-panel-2);
+}
+
+.fps-settings-panel[hidden] {
+  display: none;
+}
+
+.fps-project-list {
+  display: grid;
+  gap: 10px;
+}
+
+.fps-project-option {
+  min-height: 58px;
+  padding: 10px 12px;
+  border: 1px solid var(--unity-border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--unity-card);
+}
+
+.fps-project-option input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--unity-blue);
+}
+
+.fps-project-option span,
+.fps-project-option strong,
+.fps-project-option small {
+  display: block;
+}
+
+.fps-project-option small,
+.fps-badge {
+  color: var(--unity-muted);
+  font-size: .76rem;
+}
+
+.fps-badge {
+  width: fit-content;
+  margin-top: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #d8f4ff;
+  background: rgba(0, 120, 212, .28);
+}
