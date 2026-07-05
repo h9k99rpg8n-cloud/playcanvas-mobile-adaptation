@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { createPrimitiveMesh } from './PrimitiveFactory.js';
 
-const PRIMITIVE_TYPES = new Set(['cube', 'sphere', 'capsule', 'cylinder', 'quad']);
+const PRIMITIVE_TYPES = new Set(['cube', 'sphere', 'capsule', 'cylinder', 'quad', 'torus']);
 
 function toVector3(values, fallback = [0, 0, 0]) {
   const source = Array.isArray(values) ? values : fallback;
@@ -21,12 +21,21 @@ function degreesToEuler(values) {
   );
 }
 
-export class SceneManager {
+export class SceneManager extends EventTarget {
   constructor(scene) {
+    super();
     this.scene = scene;
     this.objects = [];
     this.selected = null;
     this.selectionOutline = null;
+  }
+
+  emitChange() {
+    this.dispatchEvent(new CustomEvent('objects-changed', { detail: { objects: this.objects } }));
+  }
+
+  emitSelection() {
+    this.dispatchEvent(new CustomEvent('selection-changed', { detail: { selected: this.selected } }));
   }
 
   addPrimitive(type, options = {}) {
@@ -34,6 +43,7 @@ export class SceneManager {
     this.applyObjectData(mesh, options);
     this.scene.add(mesh);
     this.objects.push(mesh);
+    this.emitChange();
 
     if (options.select !== false) {
       this.select(mesh);
@@ -57,6 +67,7 @@ export class SceneManager {
     const objects = Array.isArray(sceneData.objects) ? sceneData.objects : [];
     objects.forEach((objectData) => this.addSceneObject(objectData));
     this.clearSelection();
+    this.emitChange();
   }
 
   applyObjectData(mesh, objectData = {}) {
@@ -73,6 +84,15 @@ export class SceneManager {
     mesh.scale.copy(scale);
   }
 
+  renameObject(object, nextName) {
+    const cleanName = nextName?.trim();
+    if (!object || !cleanName) return null;
+    object.name = cleanName;
+    this.emitChange();
+    this.emitSelection();
+    return object;
+  }
+
   clearSelection() {
     if (this.selectionOutline) {
       this.scene.remove(this.selectionOutline);
@@ -81,6 +101,7 @@ export class SceneManager {
       this.selectionOutline = null;
     }
     this.selected = null;
+    this.emitSelection();
   }
 
   select(object) {
@@ -88,6 +109,7 @@ export class SceneManager {
     this.selected = object;
     this.selectionOutline = this.createSelectionOutline(object);
     this.scene.add(this.selectionOutline);
+    this.emitSelection();
   }
 
   createSelectionOutline(object) {
