@@ -1,89 +1,33 @@
 import { ATLAS_ENGINE_LABEL } from '../../core/version.js';
+import { TEMPLATE_SCENES } from './template-scenes.js';
 
 export const TEMPLATES = [
   {
-    id: 'empty-scene',
-    name: 'Escena vacía',
+    id: 'basic-3d-scene',
+    name: 'Escena básica',
     icon: '⬛',
-    description: 'Proyecto limpio para empezar desde cero.',
+    description: 'Base 3D limpia con cámara, luz y piso simple.',
     editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
-    data: {
-      scene: {
-        objects: [],
-        ui: []
-      }
-    }
+    data: TEMPLATE_SCENES.basic3d
   },
   {
-    id: 'game-2d',
-    name: '2D',
-    icon: '🟦',
-    description: 'Base para juegos 2D, UI y prototipos ligeros.',
+    id: 'test-car-3d',
+    name: 'Carrito de prueba',
+    icon: '🚗',
+    description: 'Carrito armado con primitivas para probar composición 3D.',
     editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
-    data: {
-      scene: {
-        objects: ['camera-2d'],
-        ui: []
-      }
-    }
+    data: TEMPLATE_SCENES.testCar
   },
   {
-    id: 'game-3d',
-    name: '3D',
-    icon: '🎮',
-    description: 'Escena 3D básica con cámara, luz y plano.',
+    id: 'garden-3d',
+    name: 'Jardín 3D',
+    icon: '🌳',
+    description: 'Escena simple con árboles, piedras y suelo para probar rendimiento.',
     editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
-    data: {
-      scene: {
-        objects: ['camera', 'light', 'floor'],
-        ui: []
-      }
-    }
-  },
-  {
-    id: 'game-3d-hdrp',
-    name: '3D HDRP',
-    icon: '🌄',
-    description: 'Plantilla visual de alto realismo. Próximamente.',
-    editorVersion: ATLAS_ENGINE_LABEL,
-    installed: false,
-    data: {
-      scene: {
-        objects: ['camera', 'sun', 'environment'],
-        ui: []
-      }
-    }
-  },
-  {
-    id: 'web-app',
-    name: 'Aplicación web',
-    icon: '📱',
-    description: 'Base para crear pantallas, botones y menús.',
-    editorVersion: ATLAS_ENGINE_LABEL,
-    installed: true,
-    data: {
-      scene: {
-        objects: [],
-        ui: ['screen', 'button']
-      }
-    }
-  },
-  {
-    id: 'basic-demo',
-    name: 'Demo básica',
-    icon: '✨',
-    description: 'Solo interfaz por ahora; tendrá función con el editor.',
-    editorVersion: ATLAS_ENGINE_LABEL,
-    installed: false,
-    data: {
-      scene: {
-        objects: [],
-        ui: ['demo-panel']
-      }
-    }
+    data: TEMPLATE_SCENES.garden3d
   }
 ];
 
