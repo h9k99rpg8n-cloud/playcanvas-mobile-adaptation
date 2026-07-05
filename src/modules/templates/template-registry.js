@@ -3,10 +3,19 @@ import { TEMPLATE_SCENES } from './template-scenes.js';
 
 export const TEMPLATES = [
   {
+    id: 'empty-scene',
+    name: 'Escena vacía',
+    icon: '◇',
+    description: 'Proyecto limpio sin objetos iniciales.',
+    editorVersion: ATLAS_ENGINE_LABEL,
+    installed: true,
+    data: { scene: { objects: [], ui: [] } }
+  },
+  {
     id: 'basic-3d-scene',
     name: 'Escena básica',
     icon: '⬛',
-    description: 'Base 3D limpia con cámara, luz y piso simple.',
+    description: 'Base 3D limpia con piso y cubo inicial.',
     editorVersion: ATLAS_ENGINE_LABEL,
     installed: true,
     data: TEMPLATE_SCENES.basic3d
