@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="styles/base.css" />
   <link rel="stylesheet" href="styles/launcher.css" />
   <script type="module" src="src/app/launcher-app.js"></script>
+  <script type="module" src="src/app/atlas-welcome.js"></script>
+  <script type="module" src="src/app/atlas-fps-settings.js"></script>
+  <script type="module" src="src/app/atlas-template-sync.js"></script>
 </head>
 <body class="atlas-launcher-body">
   <main class="atlas-launcher-shell">
@@ -16,7 +19,7 @@
         <span class="atlas-logo-mark">A</span>
         <span>
           <strong>Atlas Engine</strong>
-          <small id="launcherVersionLabel">Launcher 0.2.5 · Atlas 0.0.12.1</small>
+          <small id="launcherVersionLabel">Launcher 0.3.4 · Atlas 0.0.12.4.2</small>
         </span>
       </a>
     </header>
@@ -40,106 +43,46 @@
     </nav>
 
     <section class="atlas-launcher-view active" data-launcher-view="projects" aria-label="Proyectos">
-      <div class="atlas-section-header">
-        <div>
-          <p class="atlas-kicker">Tus proyectos</p>
-          <h2>Gestión rápida</h2>
-        </div>
-        <span class="atlas-count-pill"><span id="launcherProjectCount">0</span></span>
-      </div>
+      <div class="atlas-section-header"><div><p class="atlas-kicker">Tus proyectos</p><h2>Gestión rápida</h2></div><span class="atlas-count-pill"><span id="launcherProjectCount">0</span></span></div>
       <div class="atlas-project-list" id="launcherProjectsList"></div>
       <button class="primary-button" id="openCreateProjectButton" type="button">Crear nuevo proyecto</button>
     </section>
 
     <section class="atlas-launcher-view" data-launcher-view="templates" aria-label="Plantillas">
-      <div class="atlas-section-header">
-        <div>
-          <p class="atlas-kicker">Tienda</p>
-          <h2>Plantillas 3D</h2>
-        </div>
-      </div>
-      <article class="atlas-store-card" data-template-card="test-car-3d">
-        <span>🚗</span>
-        <div>
-          <h3>Carrito de prueba</h3>
-          <p>Plantilla con primitivas para probar composición 3D. Estado: <strong data-template-status="test-car-3d">No instalada</strong></p>
-          <div class="template-install-progress" data-template-progress="test-car-3d"><span></span></div>
-        </div>
-        <button class="atlas-install-template" data-install-template="test-car-3d" type="button">Instalar</button>
-      </article>
-      <article class="atlas-store-card" data-template-card="garden-3d">
-        <span>🌳</span>
-        <div>
-          <h3>Jardín 3D</h3>
-          <p>Escena simple para probar rendimiento con objetos básicos. Estado: <strong data-template-status="garden-3d">No instalada</strong></p>
-          <div class="template-install-progress" data-template-progress="garden-3d"><span></span></div>
-        </div>
-        <button class="atlas-install-template" data-install-template="garden-3d" type="button">Instalar</button>
-      </article>
+      <div class="atlas-section-header"><div><p class="atlas-kicker">Tienda</p><h2>Plantillas 3D</h2></div></div>
+      <article class="atlas-store-card" data-template-card="test-car-3d"><span>🚗</span><div><h3>Carrito de prueba</h3><p>Plantilla con primitivas para probar composición 3D. Estado: <strong data-template-status="test-car-3d">No instalada</strong></p><div class="template-install-progress" data-template-progress="test-car-3d"><span></span></div></div><button class="atlas-install-template" data-install-template="test-car-3d" type="button">Instalar</button></article>
+      <article class="atlas-store-card" data-template-card="garden-3d"><span>🌳</span><div><h3>Jardín 3D</h3><p>Escena simple para probar rendimiento con objetos básicos. Estado: <strong data-template-status="garden-3d">No instalada</strong></p><div class="template-install-progress" data-template-progress="garden-3d"><span></span></div></div><button class="atlas-install-template" data-install-template="garden-3d" type="button">Instalar</button></article>
+      <article class="atlas-store-card" data-template-card="track-template"><span>○</span><div><h3>Carreras</h3><p>Pista simple creada con Toroide. Estado: <strong data-template-status="track-template">No instalada</strong></p><div class="template-install-progress" data-template-progress="track-template"><span></span></div></div><button class="atlas-install-template" data-install-template="track-template" type="button">Instalar</button></article>
     </section>
 
     <section class="atlas-launcher-view" data-launcher-view="learn" aria-label="Aprender">
-      <div class="atlas-section-header">
-        <div>
-          <p class="atlas-kicker">Aprender</p>
-          <h2>Centro de aprendizaje</h2>
-        </div>
-      </div>
-      <article class="atlas-info-card">
-        <h3>Próximamente</h3>
-        <p>Aquí vivirán tutoriales paso por paso para crear proyectos, usar primitivas, configurar FPS y exportar juegos web.</p>
-      </article>
+      <div class="atlas-section-header"><div><p class="atlas-kicker">Aprender</p><h2>Centro de aprendizaje</h2></div></div>
+      <article class="atlas-info-card"><h3>Próximamente</h3><p>Aquí vivirán tutoriales paso por paso para crear proyectos, usar primitivas, configurar FPS y exportar juegos web.</p></article>
     </section>
 
     <section class="atlas-launcher-view" data-launcher-view="settings" aria-label="Configuración">
-      <div class="atlas-section-header">
-        <div>
-          <p class="atlas-kicker">Configuración</p>
-          <h2>Atlas</h2>
-        </div>
-      </div>
-      <article class="atlas-info-card">
-        <h3>Apariencia</h3>
-        <p>Tema actual: negro profesional. El gris clásico se agregará en una fase posterior.</p>
-      </article>
-      <article class="atlas-info-card">
-        <h3>Contador FPS</h3>
-        <p>El contador FPS se muestra en la barra superior del editor cuando está activo.</p>
-      </article>
+      <div class="atlas-section-header"><div><p class="atlas-kicker">Configuración</p><h2>Atlas</h2></div></div>
+      <article class="atlas-info-card"><h3>Apariencia</h3><p>Tema actual: negro profesional. El gris clásico se agregará en una fase posterior.</p></article>
+      <article class="atlas-info-card"><h3>Contador FPS</h3><p>El contador FPS ahora se controla por proyecto desde el toggle de FPS.</p></article>
     </section>
 
     <section class="atlas-launcher-view" data-launcher-view="updates" aria-label="Actualizaciones">
-      <div class="atlas-section-header">
-        <div>
-          <p class="atlas-kicker">Actualización</p>
-          <h2>Resumen</h2>
-        </div>
-      </div>
-      <article class="atlas-info-card">
-        <h3>Atlas 0.0.12.1</h3>
-        <ul class="atlas-update-list" id="launcherUpdatesList"></ul>
-      </article>
+      <div class="atlas-section-header"><div><p class="atlas-kicker">Actualización</p><h2>Historial profesional</h2></div></div>
+      <article class="atlas-info-card"><h3>Atlas 0.0.12.4.2</h3><ul class="atlas-update-list" id="launcherUpdatesList"></ul></article>
+      <article class="atlas-version-card"><span>0.0.12.2</span><h3>Launcher Hub e IndexedDB</h3><p>Launcher tipo Hub, ProjectStore con IndexedDB, acciones por proyecto y plantillas preparadas para contenido remoto.</p></article>
+      <article class="atlas-version-card"><span>0.0.12.1</span><h3>Limpieza Visual</h3><p>FPS reubicado, jerarquía más limpia, escena vacía y formulario flotante para crear proyectos.</p></article>
+      <article class="atlas-version-card"><span>0.0.12</span><h3>Jerarquía y Toroide</h3><p>Figura Toroide, jerarquía inicial y primeras bases del editor 3D moderno.</p></article>
     </section>
   </main>
 
   <section class="atlas-create-modal" id="launcherCreateModal" hidden>
     <form class="atlas-create-project-form" id="launcherCreateProjectForm">
-      <div class="atlas-section-header">
-        <div>
-          <p class="atlas-kicker">Nuevo proyecto</p>
-          <h2>Crear en Atlas</h2>
-        </div>
-        <button class="atlas-mini-button" id="closeCreateProjectButton" type="button">×</button>
-      </div>
-      <label class="atlas-field-label" for="launcherProjectName">Nombre *</label>
-      <input class="atlas-text-field" id="launcherProjectName" maxlength="40" placeholder="Mi mundo Atlas" required />
-      <label class="atlas-field-label" for="launcherProjectDescription">Descripción *</label>
-      <textarea class="atlas-text-field atlas-textarea" id="launcherProjectDescription" maxlength="160" placeholder="Describe tu juego o escena" required></textarea>
-      <label class="atlas-field-label" for="launcherTemplateSelect">Plantilla</label>
-      <select class="atlas-text-field" id="launcherTemplateSelect" required></select>
+      <div class="atlas-section-header"><div><p class="atlas-kicker">Nuevo proyecto</p><h2>Crear en Atlas</h2></div><button class="atlas-mini-button" id="closeCreateProjectButton" type="button">×</button></div>
+      <label class="atlas-field-label" for="launcherProjectName">Nombre *</label><input class="atlas-text-field" id="launcherProjectName" maxlength="40" placeholder="Mi mundo Atlas" required />
+      <label class="atlas-field-label" for="launcherProjectDescription">Descripción *</label><textarea class="atlas-text-field atlas-textarea" id="launcherProjectDescription" maxlength="160" placeholder="Describe tu juego o escena" required></textarea>
+      <label class="atlas-field-label" for="launcherTemplateSelect">Plantilla</label><select class="atlas-text-field" id="launcherTemplateSelect" required></select>
       <p class="launcher-menu-note" id="launcherTemplateHelp">Puedes iniciar vacío o usar una plantilla instalada.</p>
-      <label class="atlas-field-label" for="launcherProjectIcon">Icono personalizado</label>
-      <input class="atlas-text-field" id="launcherProjectIcon" accept="image/png,image/jpeg,image/webp,image/svg+xml" type="file" />
+      <label class="atlas-field-label" for="launcherProjectIcon">Icono personalizado</label><input class="atlas-text-field" id="launcherProjectIcon" accept="image/png,image/jpeg,image/webp,image/svg+xml" type="file" />
       <button class="primary-button" type="submit">Crear y abrir editor</button>
     </form>
   </section>
