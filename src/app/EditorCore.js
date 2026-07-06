@@ -61,13 +61,16 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (!project?.settings?.showFps) statsBox.hidden = true;
 
   const modeBar = makeDiv('transformModeBar', 'transform-mode-bar');
+  const selectBtn = makeButton('selectionModeButton', 'Seleccionar', modeBar);
   const moveBtn = makeButton('moveModeButton', 'Mover', modeBar);
   const rotateBtn = makeButton('rotateModeButton', 'Rotar', modeBar);
   const scaleBtn = makeButton('scaleModeButton', 'Escalar', modeBar);
+  let selectionEnabled = true;
+  selectBtn.classList.add('active');
 
   const viewport = new ViewportRenderer($('sceneCanvas'), $('viewGizmoCanvas'));
   const transform = new TransformGizmo(viewport.camera, viewport.canvas, viewport.cameraController);
-  new HierarchyPanel({ sceneManager: viewport.sceneManager, transformGizmo: transform });
+  const hierarchy = new HierarchyPanel({ sceneManager: viewport.sceneManager, transformGizmo: transform });
   const stats = new StatsMonitor(statsBox);
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
@@ -76,12 +79,18 @@ window.addEventListener('DOMContentLoaded', async () => {
   loadProjectScene(project, viewport);
 
   $('resetCameraButton').addEventListener('click', () => viewport.cameraController.reset());
+  selectBtn.addEventListener('click', () => {
+    selectionEnabled = !selectionEnabled;
+    selectBtn.classList.toggle('active', selectionEnabled);
+    hierarchy.setSelectionEnabled(selectionEnabled);
+    if (!selectionEnabled) transform.detach();
+  });
   moveBtn.addEventListener('click', () => transform.setMode('translate'));
   rotateBtn.addEventListener('click', () => transform.setMode('rotate'));
   scaleBtn.addEventListener('click', () => transform.setMode('scale'));
 
   viewport.canvas.addEventListener('pointerdown', (event) => {
-    if (transform.control.dragging) return;
+    if (!selectionEnabled || transform.control.dragging) return;
     const picked = pickObject(event, viewport, pointer, raycaster);
     if (picked) {
       viewport.sceneManager.select(picked);
@@ -112,7 +121,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     grid: $('primitiveGrid'),
     onCreate: (type) => {
       const object = viewport.addPrimitive(type);
-      transform.attach(object);
+      if (selectionEnabled) transform.attach(object);
     }
   });
 });
