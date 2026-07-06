@@ -5,6 +5,14 @@ export class HierarchyPanel {
     this.collapsed = new Set();
     this.draggedObject = null;
     this.objectMap = new Map();
+    this.opened = false;
+    this.selectionEnabled = true;
+
+    this.toggleButton = document.createElement('button');
+    this.toggleButton.type = 'button';
+    this.toggleButton.className = 'atlas-hierarchy-toggle';
+    this.toggleButton.setAttribute('aria-label', 'Abrir jerarquía');
+    this.toggleButton.textContent = '☷';
 
     this.root = document.createElement('aside');
     this.root.className = 'atlas-hierarchy-sidebar';
@@ -23,11 +31,36 @@ export class HierarchyPanel {
     });
 
     this.root.append(header, this.list);
-    document.querySelector('.scene-editor').append(this.root);
+    document.querySelector('.scene-editor').append(this.toggleButton, this.root);
 
+    this.toggleButton.addEventListener('click', () => this.toggle());
     this.sceneManager.addEventListener('objects-changed', () => this.render());
     this.sceneManager.addEventListener('selection-changed', () => this.render());
     this.render();
+    this.close();
+  }
+
+  setSelectionEnabled(enabled) {
+    this.selectionEnabled = Boolean(enabled);
+    if (!this.selectionEnabled) this.transformGizmo.detach();
+  }
+
+  toggle() { this.opened ? this.close() : this.open(); }
+
+  open() {
+    this.opened = true;
+    this.root.classList.add('open');
+    this.toggleButton.classList.add('active');
+    this.toggleButton.setAttribute('aria-label', 'Cerrar jerarquía');
+    document.querySelector('.scene-editor')?.classList.add('hierarchy-open');
+  }
+
+  close() {
+    this.opened = false;
+    this.root.classList.remove('open');
+    this.toggleButton.classList.remove('active');
+    this.toggleButton.setAttribute('aria-label', 'Abrir jerarquía');
+    document.querySelector('.scene-editor')?.classList.remove('hierarchy-open');
   }
 
   objectId(object) {
@@ -48,7 +81,7 @@ export class HierarchyPanel {
 
   selectObject(object) {
     this.sceneManager.select(object);
-    this.transformGizmo.attach(object);
+    if (this.selectionEnabled) this.transformGizmo.attach(object);
   }
 
   render() {
