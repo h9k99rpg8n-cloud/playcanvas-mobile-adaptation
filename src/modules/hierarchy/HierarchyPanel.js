@@ -1,7 +1,8 @@
 export class HierarchyPanel {
-  constructor({ sceneManager, transformGizmo }) {
+  constructor({ sceneManager, transformGizmo, onAddChild }) {
     this.sceneManager = sceneManager;
     this.transformGizmo = transformGizmo;
+    this.onAddChild = onAddChild;
     this.collapsed = new Set();
     this.draggedObject = null;
     this.objectMap = new Map();
@@ -46,49 +47,18 @@ export class HierarchyPanel {
   }
 
   toggle() { this.opened ? this.close() : this.open(); }
+  open() { this.opened = true; this.root.classList.add('open'); this.toggleButton.classList.add('active'); this.toggleButton.setAttribute('aria-label', 'Cerrar jerarquía'); document.querySelector('.scene-editor')?.classList.add('hierarchy-open'); }
+  close() { this.opened = false; this.root.classList.remove('open'); this.toggleButton.classList.remove('active'); this.toggleButton.setAttribute('aria-label', 'Abrir jerarquía'); document.querySelector('.scene-editor')?.classList.remove('hierarchy-open'); }
 
-  open() {
-    this.opened = true;
-    this.root.classList.add('open');
-    this.toggleButton.classList.add('active');
-    this.toggleButton.setAttribute('aria-label', 'Cerrar jerarquía');
-    document.querySelector('.scene-editor')?.classList.add('hierarchy-open');
-  }
-
-  close() {
-    this.opened = false;
-    this.root.classList.remove('open');
-    this.toggleButton.classList.remove('active');
-    this.toggleButton.setAttribute('aria-label', 'Abrir jerarquía');
-    document.querySelector('.scene-editor')?.classList.remove('hierarchy-open');
-  }
-
-  objectId(object) {
-    return this.sceneManager.ensureObjectId(object);
-  }
-
-  objectFromPoint(x, y) {
-    const row = document.elementFromPoint(x, y)?.closest?.('[data-object-id]');
-    return row ? this.objectMap.get(row.dataset.objectId) : null;
-  }
-
-  toggleCollapse(object) {
-    const id = this.objectId(object);
-    if (this.collapsed.has(id)) this.collapsed.delete(id);
-    else this.collapsed.add(id);
-    this.render();
-  }
-
-  selectObject(object) {
-    this.sceneManager.select(object);
-    if (this.selectionEnabled) this.transformGizmo.attach(object);
-  }
+  objectId(object) { return this.sceneManager.ensureObjectId(object); }
+  objectFromPoint(x, y) { const row = document.elementFromPoint(x, y)?.closest?.('[data-object-id]'); return row ? this.objectMap.get(row.dataset.objectId) : null; }
+  toggleCollapse(object) { const id = this.objectId(object); if (this.collapsed.has(id)) this.collapsed.delete(id); else this.collapsed.add(id); this.render(); }
+  selectObject(object) { this.sceneManager.select(object); if (this.selectionEnabled) this.transformGizmo.attach(object); }
 
   render() {
     this.list.replaceChildren();
     this.objectMap.clear();
     const roots = this.sceneManager.getRootObjects();
-
     if (this.sceneManager.objects.length === 0) {
       const empty = document.createElement('article');
       empty.className = 'atlas-hierarchy-empty';
@@ -96,7 +66,6 @@ export class HierarchyPanel {
       this.list.append(empty);
       return;
     }
-
     roots.forEach((object) => this.renderObject(object, 0));
   }
 
@@ -119,10 +88,7 @@ export class HierarchyPanel {
     arrow.className = 'atlas-hierarchy-arrow';
     arrow.textContent = hasChildren ? (isCollapsed ? '▸' : '▾') : '•';
     arrow.disabled = !hasChildren;
-    arrow.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (hasChildren) this.toggleCollapse(object);
-    });
+    arrow.addEventListener('click', (event) => { event.stopPropagation(); if (hasChildren) this.toggleCollapse(object); });
 
     const main = document.createElement('button');
     main.type = 'button';
@@ -133,32 +99,27 @@ export class HierarchyPanel {
     const rename = document.createElement('input');
     rename.className = 'atlas-hierarchy-name';
     rename.value = object.name || 'Objeto';
-    rename.addEventListener('change', () => this.sceneManager.renameObject(object, rename.value));
+    rename.disabled = !selected;
+    rename.title = selected ? 'Renombrar objeto seleccionado' : 'Selecciona el objeto para renombrarlo';
+    rename.addEventListener('change', () => { if (selected) this.sceneManager.renameObject(object, rename.value); });
     rename.addEventListener('click', (event) => event.stopPropagation());
 
-    row.append(arrow, main, rename);
+    const addChild = document.createElement('button');
+    addChild.type = 'button';
+    addChild.className = 'atlas-hierarchy-add-child';
+    addChild.textContent = '+';
+    addChild.hidden = !selected;
+    addChild.addEventListener('click', (event) => { event.stopPropagation(); this.onAddChild?.(object, 'sphere'); });
+
+    row.append(arrow, main, rename, addChild);
 
     row.addEventListener('dragstart', () => { this.draggedObject = object; row.classList.add('dragging'); });
     row.addEventListener('dragend', () => { this.draggedObject = null; row.classList.remove('dragging'); });
     row.addEventListener('dragover', (event) => { event.preventDefault(); if (this.draggedObject && this.draggedObject !== object) row.classList.add('drop-target'); });
     row.addEventListener('dragleave', () => row.classList.remove('drop-target'));
-    row.addEventListener('drop', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      row.classList.remove('drop-target');
-      if (this.draggedObject && this.draggedObject !== object) this.sceneManager.setParent(this.draggedObject, object);
-      this.draggedObject = null;
-    });
-
+    row.addEventListener('drop', (event) => { event.preventDefault(); event.stopPropagation(); row.classList.remove('drop-target'); if (this.draggedObject && this.draggedObject !== object) this.sceneManager.setParent(this.draggedObject, object); this.draggedObject = null; });
     row.addEventListener('touchstart', () => { this.draggedObject = object; row.classList.add('dragging'); }, { passive: true });
-    row.addEventListener('touchend', (event) => {
-      row.classList.remove('dragging');
-      const touch = event.changedTouches?.[0];
-      const target = touch ? this.objectFromPoint(touch.clientX, touch.clientY) : null;
-      if (this.draggedObject && target && target !== this.draggedObject) this.sceneManager.setParent(this.draggedObject, target);
-      else if (this.draggedObject && !target) this.sceneManager.setParent(this.draggedObject, null);
-      this.draggedObject = null;
-    });
+    row.addEventListener('touchend', (event) => { row.classList.remove('dragging'); const touch = event.changedTouches?.[0]; const target = touch ? this.objectFromPoint(touch.clientX, touch.clientY) : null; if (this.draggedObject && target && target !== this.draggedObject) this.sceneManager.setParent(this.draggedObject, target); else if (this.draggedObject && !target) this.sceneManager.setParent(this.draggedObject, null); this.draggedObject = null; });
 
     this.list.append(row);
     if (!isCollapsed) children.forEach((child) => this.renderObject(child, depth + 1));
