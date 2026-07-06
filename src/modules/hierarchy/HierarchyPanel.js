@@ -2,115 +2,123 @@ export class HierarchyPanel {
   constructor({ sceneManager, transformGizmo }) {
     this.sceneManager = sceneManager;
     this.transformGizmo = transformGizmo;
-    this.opened = false;
-    this.large = false;
+    this.collapsed = new Set();
+    this.draggedObject = null;
 
-    this.button = document.createElement('button');
-    this.button.type = 'button';
-    this.button.textContent = 'Jerarquía';
-    Object.assign(this.button.style, {
-      position: 'fixed', left: '14px', top: '96px', zIndex: '9999', minWidth: '110px', height: '42px',
-      border: '1px solid #555', borderRadius: '12px', color: '#fff', background: '#242424', fontWeight: '900',
-      boxShadow: '0 12px 28px rgba(0,0,0,.28)'
-    });
+    this.root = document.createElement('aside');
+    this.root.className = 'atlas-hierarchy-sidebar';
 
-    this.root = document.createElement('section');
-    Object.assign(this.root.style, {
-      position: 'fixed', left: '12px', top: '146px', zIndex: '9998', width: 'min(76vw, 290px)',
-      maxHeight: 'calc(100dvh - 172px)', overflow: 'auto', padding: '12px', border: '1px solid #4a4a4a',
-      borderRadius: '16px', background: '#1f1f1f', boxShadow: '0 22px 56px rgba(0,0,0,.42)',
-      transform: 'translateX(-120%)', transition: 'transform .18s ease', display: 'grid', gap: '10px'
-    });
-
-    const header = document.createElement('div');
-    Object.assign(header.style, { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' });
-
-    const titleBox = document.createElement('div');
-    const kicker = document.createElement('p');
-    kicker.textContent = 'Atlas';
-    Object.assign(kicker.style, { margin: '0', color: '#aaa', fontSize: '.66rem', fontWeight: '900', textTransform: 'uppercase' });
-    const title = document.createElement('h2');
-    title.textContent = 'Jerarquía';
-    Object.assign(title.style, { margin: '0', color: '#fff', fontSize: '1.05rem' });
-    titleBox.append(kicker, title);
-
-    this.sizeButton = document.createElement('button');
-    this.sizeButton.type = 'button';
-    this.sizeButton.textContent = 'Grande';
-    Object.assign(this.sizeButton.style, { minWidth: '64px', height: '34px', border: '1px solid #555', borderRadius: '10px', color: '#fff', background: '#333', fontWeight: '800' });
-
-    const close = document.createElement('button');
-    close.type = 'button';
-    close.textContent = '×';
-    Object.assign(close.style, { width: '34px', height: '34px', border: '1px solid #555', borderRadius: '10px', color: '#fff', background: '#333', fontSize: '1.1rem' });
+    const header = document.createElement('header');
+    header.className = 'atlas-hierarchy-header';
+    header.innerHTML = '<div><p>Atlas</p><h2>Jerarquía</h2></div><small>Arrastra para parenting</small>';
 
     this.list = document.createElement('div');
-    Object.assign(this.list.style, { display: 'grid', gap: '8px' });
+    this.list.className = 'atlas-hierarchy-tree';
+    this.list.addEventListener('dragover', (event) => event.preventDefault());
+    this.list.addEventListener('drop', (event) => {
+      event.preventDefault();
+      if (this.draggedObject) this.sceneManager.setParent(this.draggedObject, null);
+      this.draggedObject = null;
+    });
 
-    header.append(titleBox, this.sizeButton, close);
     this.root.append(header, this.list);
-    document.querySelector('.scene-editor').append(this.button, this.root);
+    document.querySelector('.scene-editor').append(this.root);
 
-    this.button.addEventListener('click', () => this.toggle());
-    this.sizeButton.addEventListener('click', () => this.toggleSize());
-    close.addEventListener('click', () => this.close());
     this.sceneManager.addEventListener('objects-changed', () => this.render());
     this.sceneManager.addEventListener('selection-changed', () => this.render());
     this.render();
   }
 
-  toggle() { this.opened ? this.close() : this.open(); }
-  open() { this.opened = true; this.root.style.transform = 'translateX(0)'; this.button.style.background = '#3a3a3a'; }
-  close() { this.opened = false; this.root.style.transform = 'translateX(-120%)'; this.button.style.background = '#242424'; }
+  objectId(object) {
+    return this.sceneManager.ensureObjectId(object);
+  }
 
-  toggleSize() {
-    this.large = !this.large;
-    this.root.style.width = this.large ? 'min(94vw, 390px)' : 'min(76vw, 290px)';
-    this.sizeButton.textContent = this.large ? 'Compacta' : 'Grande';
+  toggleCollapse(object) {
+    const id = this.objectId(object);
+    if (this.collapsed.has(id)) this.collapsed.delete(id);
+    else this.collapsed.add(id);
+    this.render();
+  }
+
+  selectObject(object) {
+    this.sceneManager.select(object);
+    this.transformGizmo.attach(object);
   }
 
   render() {
-    const objects = this.sceneManager.objects;
     this.list.replaceChildren();
+    const roots = this.sceneManager.getRootObjects();
 
-    if (objects.length === 0) {
+    if (this.sceneManager.objects.length === 0) {
       const empty = document.createElement('article');
-      Object.assign(empty.style, { border: '1px solid #444', borderRadius: '12px', background: '#2b2b2b', padding: '10px', color: '#fff', display: 'grid', gap: '4px' });
-      const strong = document.createElement('strong');
-      strong.textContent = 'Sin objetos';
-      const small = document.createElement('small');
-      small.textContent = 'Crea una figura o abre una plantilla.';
-      small.style.color = '#bbb';
-      empty.append(strong, small);
+      empty.className = 'atlas-hierarchy-empty';
+      empty.innerHTML = '<strong>Sin objetos</strong><small>Crea una figura o abre una plantilla.</small>';
       this.list.append(empty);
       return;
     }
 
-    objects.forEach((object, index) => {
-      const selected = object === this.sceneManager.selected;
-      const item = document.createElement('article');
-      Object.assign(item.style, { border: selected ? '1px solid #8ab4ff' : '1px solid #444', borderRadius: '12px', background: selected ? '#343a46' : '#2b2b2b', padding: '9px', display: 'grid', gap: '7px' });
+    roots.forEach((object) => this.renderObject(object, 0));
+  }
 
-      const select = document.createElement('button');
-      select.type = 'button';
-      Object.assign(select.style, { width: '100%', border: '0', padding: '0', display: 'grid', gap: '2px', color: '#fff', textAlign: 'left', background: 'transparent' });
+  renderObject(object, depth) {
+    const children = this.sceneManager.getObjectChildren(object);
+    const hasChildren = children.length > 0;
+    const id = this.objectId(object);
+    const isCollapsed = this.collapsed.has(id);
+    const selected = object === this.sceneManager.selected;
 
-      const type = document.createElement('span');
-      type.textContent = object.userData.primitiveType || 'objeto';
-      Object.assign(type.style, { color: '#cfcfcf', fontSize: '.66rem', fontWeight: '900', textTransform: 'uppercase' });
-      const name = document.createElement('strong');
-      name.textContent = object.name || `Objeto ${index + 1}`;
-      select.append(type, name);
+    const row = document.createElement('article');
+    row.className = 'atlas-hierarchy-row' + (selected ? ' selected' : '');
+    row.draggable = true;
+    row.style.setProperty('--depth', String(depth));
+    row.dataset.objectId = id;
 
-      const input = document.createElement('input');
-      input.value = object.name || `Objeto ${index + 1}`;
-      Object.assign(input.style, { width: '100%', minHeight: '36px', border: '1px solid #555', borderRadius: '10px', padding: '8px 10px', color: '#fff', background: '#181818', outline: 'none' });
-
-      select.addEventListener('click', () => { this.sceneManager.select(object); this.transformGizmo.attach(object); });
-      input.addEventListener('change', () => { this.sceneManager.renameObject(object, input.value); });
-
-      item.append(select, input);
-      this.list.append(item);
+    const arrow = document.createElement('button');
+    arrow.type = 'button';
+    arrow.className = 'atlas-hierarchy-arrow';
+    arrow.textContent = hasChildren ? (isCollapsed ? '▸' : '▾') : '•';
+    arrow.disabled = !hasChildren;
+    arrow.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (hasChildren) this.toggleCollapse(object);
     });
+
+    const main = document.createElement('button');
+    main.type = 'button';
+    main.className = 'atlas-hierarchy-main';
+    main.innerHTML = `<span>${object.userData.primitiveType || 'objeto'}</span><strong>${object.name || 'Objeto'}</strong>`;
+    main.addEventListener('click', () => this.selectObject(object));
+
+    const rename = document.createElement('input');
+    rename.className = 'atlas-hierarchy-name';
+    rename.value = object.name || 'Objeto';
+    rename.addEventListener('change', () => this.sceneManager.renameObject(object, rename.value));
+    rename.addEventListener('click', (event) => event.stopPropagation());
+
+    row.append(arrow, main, rename);
+
+    row.addEventListener('dragstart', () => {
+      this.draggedObject = object;
+      row.classList.add('dragging');
+    });
+    row.addEventListener('dragend', () => {
+      this.draggedObject = null;
+      row.classList.remove('dragging');
+    });
+    row.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      if (this.draggedObject && this.draggedObject !== object) row.classList.add('drop-target');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drop-target'));
+    row.addEventListener('drop', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      row.classList.remove('drop-target');
+      if (this.draggedObject && this.draggedObject !== object) this.sceneManager.setParent(this.draggedObject, object);
+      this.draggedObject = null;
+    });
+
+    this.list.append(row);
+    if (!isCollapsed) children.forEach((child) => this.renderObject(child, depth + 1));
   }
 }
