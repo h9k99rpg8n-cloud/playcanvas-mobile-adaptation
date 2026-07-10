@@ -1,0 +1,42 @@
+.atlas-hierarchy-row {
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.atlas-hierarchy-root-drop {
+  display: none;
+  position: absolute;
+  inset: -2px 0 0;
+  z-index: 2;
+  padding: 12px 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+  color: #d8eaff;
+  background: rgba(24, 32, 38, 0.98);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.atlas-hierarchy-header {
+  position: relative;
+}
+
+.atlas-hierarchy-sidebar.touch-reparenting .atlas-hierarchy-root-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.atlas-hierarchy-root-drop.drop-target {
+  border-color: #42f287;
+  color: #071b10;
+  background: #42f287;
+}
+
+.atlas-hierarchy-sidebar.touch-reparenting .atlas-hierarchy-row.dragging {
+  touch-action: none;
+  opacity: 0.45;
+}

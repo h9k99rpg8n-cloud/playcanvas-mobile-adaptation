@@ -23,6 +23,7 @@ https://h9k99rpg8n-cloud.github.io/playcanvas-mobile-adaptation/
 - Cubo, esfera, cápsula, cilindro, quad y toroide.
 - Selección de objetos y gizmos de mover, rotar y escalar.
 - Jerarquía con objetos padre e hijo.
+- Parenting móvil mediante pulsación prolongada, sin activarse al desplazar la lista.
 - Renombrado y creación de hijos desde la jerarquía.
 - Guardado de escena, transformaciones y `parentId`.
 - Contador de FPS configurable por proyecto.
@@ -67,7 +68,8 @@ src/
     ├── grid/
     │   └── viewport-grid.js
     ├── hierarchy/
-    │   └── HierarchyPanel.js
+    │   ├── HierarchyPanel.js
+    │   └── LongPressDragGesture.js
     ├── rendering/
     │   ├── PrimitiveFactory.js
     │   ├── ViewportEnvironment.js
