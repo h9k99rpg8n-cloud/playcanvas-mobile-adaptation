@@ -64,11 +64,14 @@ EditorCore
 - Gizmo seleccionado: mover, rotar o escalar.
 - Botón Crear: abrir la lista de primitivas.
 - Botón de jerarquía: abrir o cerrar el árbol.
+- Toque normal en la jerarquía: seleccionar sin mover el objeto.
+- Desplazamiento vertical en la jerarquía: recorrer la lista sin cambiar padres.
+- Pulsación de 360 ms y arrastre: iniciar parenting táctil.
+- Zona del encabezado: soltar un objeto para convertirlo en raíz.
 
 ## Problemas móviles que deben resolverse
 
 - Diferenciar claramente un toque de selección de un arrastre para orbitar.
-- Evitar parenting accidental al desplazarse por la jerarquía.
 - Mantener botones fuera de las áreas seguras del iPhone.
 - Reducir superposiciones en pantallas estrechas.
 - Evitar redimensionar renderizadores cuando las dimensiones no cambian.
@@ -76,10 +79,10 @@ EditorCore
 
 ## Orden de desarrollo inmediato
 
-1. Terminar el saneamiento sin cambiar funciones.
-2. Validar padre, hijo y nieto al guardar y recargar.
-3. Resolver conflictos de gestos táctiles.
-4. Añadir un inspector inicialmente de solo lectura.
+1. Saneamiento estructural: completado.
+2. Persistencia de padre, hijo y nieto: cubierta por pruebas automáticas.
+3. Conflictos de gestos táctiles: implementación completada; falta validación física en iPhone.
+4. Añadir un inspector inicialmente de solo lectura después de esa validación.
 5. Habilitar edición de posición, rotación y escala por partes.
 
 El inspector no debe comenzar hasta que la jerarquía y las transformaciones sobrevivan correctamente a una recarga.
