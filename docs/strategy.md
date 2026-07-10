@@ -1,48 +1,59 @@
-# Estrategia de adaptación móvil
+# Estrategia de desarrollo de Atlas Engine
 
-## Decisión principal
+## Objetivo
 
-No vamos a descargar y modificar todo el código fuente de PlayCanvas de golpe. Eso haría el proyecto difícil de entender, difícil de actualizar y fácil de romper.
+Construir un editor 3D móvil que funcione en navegador sin convertir el repositorio en un archivo gigante ni sacrificar proyectos guardados.
 
-La estrategia será **híbrida**:
+## Tecnología actual
 
-1. **Interfaz móvil reescrita desde cero**
-   - Launcher.
-   - Editor visual.
-   - Editor de código.
-   - Menús táctiles.
-   - Paneles inferiores.
-   - Inspector simplificado.
+Atlas utiliza Three.js como base de renderizado. El nombre histórico del repositorio conserva una referencia a PlayCanvas, pero el motor activo no carga PlayCanvas.
 
-2. **Motor/renderizado no reescrito desde cero**
-   - El renderizado 3D ya existe y funciona.
-   - No conviene reescribir luces, cámara, materiales y WebGL desde cero al inicio.
-   - Primero se crea la interfaz y luego se conecta al motor.
+## Regla de saneamiento
 
-3. **Código abierto reutilizado con cuidado**
-   - Si se toma código de PlayCanvas u otro proyecto, se conservarán sus avisos de licencia.
-   - La adaptación móvil será no oficial.
-   - No se debe presentar como producto oficial de PlayCanvas.
+La limpieza se realiza en este orden:
 
-## Por qué no copiar todo desde el inicio
+1. Crear una rama desde una versión conocida.
+2. Identificar archivos alcanzables desde las páginas activas.
+3. Retirar solamente código desconectado o reemplazado.
+4. Comprobar sintaxis, imports y enlaces.
+5. Probar launcher, editor y persistencia.
+6. Fusionar únicamente después de la prueba móvil.
 
-Copiar todo el código fuente al principio tiene problemas:
+Una limpieza no debe modificar comportamiento visible.
 
-- Es demasiado grande.
-- Puede ser difícil entender qué archivo hace qué.
-- Cada actualización oficial puede romper nuestros cambios.
-- Sería complicado trabajar desde móvil.
+## Regla de arquitectura
 
-## Camino recomendado
+- `src/app/` coordina pantallas.
+- `src/modules/data/` conserva proyectos y ajustes.
+- `src/modules/rendering/` controla el viewport.
+- `src/modules/scenemanager/` administra objetos.
+- `src/modules/hierarchy/` representa relaciones padre-hijo.
+- `src/modules/tools/` contiene herramientas del editor.
+- `src/modules/templates/` define escenas iniciales.
 
-1. Crear documentación y diseño.
-2. Crear un prototipo pequeño de interfaz móvil.
-3. Crear navegación entre tres pantallas: Launcher, Editor y Código.
-4. Agregar controles táctiles de cámara.
-5. Agregar un visor 3D básico.
-6. Conectar gradualmente con PlayCanvas Engine.
-7. Revisar qué partes del editor original conviene estudiar o adaptar.
+Un módulo nuevo debe tener una responsabilidad clara y una entrada activa. No se conservarán copias antiguas sin referencias “por si acaso”; Git ya mantiene el historial.
 
-## Regla de oro
+## Compatibilidad de proyectos
 
-Primero hacer algo pequeño que funcione en móvil. Después crecerlo poco a poco.
+Los datos guardados son parte del producto. Antes de cambiar el formato de escena se debe:
+
+1. Añadir un número de esquema.
+2. Crear una migración.
+3. Probar un proyecto antiguo.
+4. Conservar una copia antes de escribir datos convertidos.
+
+## Dependencias
+
+Three.js permanece fijado en 0.165.0 durante el saneamiento. Su actualización se realizará en una rama dedicada porque TransformControls puede cambiar entre versiones.
+
+## Definición de terminado
+
+Un cambio está terminado cuando:
+
+- No introduce imports ausentes.
+- No genera errores en consola.
+- Funciona al recargar.
+- Conserva los datos del proyecto.
+- Respeta áreas seguras y objetivos táctiles.
+- Supera la prueba real en iPhone.
+- Está documentado cuando cambia arquitectura o datos.

@@ -1,94 +1,85 @@
-# Arquitectura móvil inicial
+# Arquitectura móvil de Atlas Engine
 
-La app será una sola página web con tres pantallas principales.
+Este documento describe la aplicación que existe actualmente. No representa funciones imaginadas ni prototipos antiguos.
 
-```text
-App móvil
-│
-├── Launcher
-│   ├── Nuevo proyecto
-│   ├── Mis proyectos
-│   ├── Plantillas
-│   └── Ajustes
-│
-├── Editor visual
-│   ├── Vista 3D
-│   ├── Cámara táctil
-│   ├── Jerarquía
-│   ├── Inspector
-│   ├── Assets
-│   └── Probar juego
-│
-└── Editor de código
-    ├── Lista de scripts
-    ├── Área de edición
-    ├── Guardar
-    └── Volver al editor
-```
+## Superficies principales
 
-## 1. Launcher
+### Launcher
 
-El Launcher será la entrada del usuario.
+Archivo: `index.html`
 
-Debe servir para:
+Responsabilidades:
 
-- Crear proyecto.
-- Abrir proyecto.
-- Elegir plantilla.
-- Cambiar ajustes.
-- Entrar al editor visual.
+- Mostrar proyectos.
+- Crear proyectos desde una plantilla.
+- Renombrar, duplicar y eliminar.
+- Instalar plantillas.
+- Configurar FPS por proyecto.
+- Abrir el editor con el identificador del proyecto.
 
-## 2. Editor visual
+### Editor 3D
 
-El Editor visual será la parte principal.
+Archivo: `scene-editor.html`
 
-Debe incluir:
+Responsabilidades:
 
-- Escena 3D.
-- Cámara táctil.
-- Selección de objetos tocando la pantalla.
-- Panel de jerarquía.
-- Inspector de propiedades.
-- Explorador de assets.
-- Botón para probar el juego.
+- Crear el viewport de Three.js.
+- Cargar la escena del proyecto activo.
+- Controlar la cámara táctil.
+- Seleccionar y transformar objetos.
+- Crear primitivas.
+- Mostrar la jerarquía.
+- Guardar la escena en IndexedDB.
 
-## 3. Editor de código
+### Compatibilidad
 
-El Editor de código será otra pantalla dentro de la misma app.
+`projects.html` existe únicamente para enviar enlaces antiguos al launcher actual.
 
-Debe incluir:
+### Audio experimental
 
-- Lista de archivos script.
-- Editor de texto.
-- Botón guardar.
-- Botón volver al editor visual.
+`audio.html` y `src/modules/audio/` están separados del motor activo. No deben conectarse al editor hasta que exista una especificación para assets y componentes de audio.
 
-## Navegación
-
-No serán tres páginas separadas del navegador. Será una sola app con tres vistas internas.
-
-Ejemplo:
+## Flujo de datos
 
 ```text
-currentScreen = "launcher"
-currentScreen = "editor"
-currentScreen = "code"
+Launcher
+  ↓ crea o abre
+ProjectStore
+  ↓ lee y escribe
+Storage / IndexedDB
+  ↓ entrega proyecto
+EditorCore
+  ├── ViewportRenderer
+  ├── SceneManager
+  ├── HierarchyPanel
+  ├── TransformGizmo
+  └── ToolboxUI
 ```
 
-## Controles móviles básicos
+## Controles móviles actuales
 
-- Un dedo: girar cámara o seleccionar.
-- Dos dedos: zoom.
-- Arrastre con botón activo: mover objeto.
-- Botón flotante: abrir menú de creación.
-- Panel inferior: mostrar propiedades.
+- Un dedo sobre el viewport: orbitar.
+- Pellizco con dos dedos: zoom.
+- Movimiento de dos dedos: desplazamiento.
+- Gizmo seleccionado: mover, rotar o escalar.
+- Botón Crear: abrir la lista de primitivas.
+- Botón de jerarquía: abrir o cerrar el árbol.
 
-## Prioridad inicial
+## Problemas móviles que deben resolverse
 
-La primera versión no necesita todas las funciones. Debe lograr esto:
+- Diferenciar claramente un toque de selección de un arrastre para orbitar.
+- Evitar parenting accidental al desplazarse por la jerarquía.
+- Mantener botones fuera de las áreas seguras del iPhone.
+- Reducir superposiciones en pantallas estrechas.
+- Evitar redimensionar renderizadores cuando las dimensiones no cambian.
+- Confirmar que el borde de selección sigue al objeto transformado.
 
-1. Abrir la app.
-2. Cambiar entre Launcher, Editor y Código.
-3. Mostrar una escena 3D básica.
-4. Mover la cámara en móvil.
-5. Guardar una estructura simple de proyecto.
+## Orden de desarrollo inmediato
+
+1. Terminar el saneamiento sin cambiar funciones.
+2. Validar padre, hijo y nieto al guardar y recargar.
+3. Resolver conflictos de gestos táctiles.
+4. Añadir un inspector inicialmente de solo lectura.
+5. Habilitar edición de posición, rotación y escala por partes.
+
+El inspector no debe comenzar hasta que la jerarquía y las transformaciones sobrevivan correctamente a una recarga.
