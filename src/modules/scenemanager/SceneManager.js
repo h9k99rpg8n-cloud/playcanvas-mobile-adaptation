@@ -53,6 +53,14 @@ export class SceneManager extends EventTarget {
   loadSceneData(sceneData = {}) {
     const objects = Array.isArray(sceneData.objects) ? sceneData.objects : [];
     objects.forEach((objectData) => this.addSceneObject(objectData));
+
+    const objectById = new Map(this.objects.map((object) => [object.userData.atlasId, object]));
+    objects.forEach((objectData) => {
+      const child = objectById.get(objectData.id);
+      const parent = objectById.get(objectData.parentId);
+      if (child && parent) this.setParent(child, parent, { preserveWorldTransform: false });
+    });
+
     this.clearSelection();
     this.emitChange();
   }
@@ -83,11 +91,12 @@ export class SceneManager extends EventTarget {
     return false;
   }
 
-  setParent(child, parent = null) {
+  setParent(child, parent = null, { preserveWorldTransform = true } = {}) {
     if (!child || child === parent) return false;
     if (parent && this.isDescendant(parent, child)) return false;
-    if (parent) parent.attach(child);
-    else this.scene.attach(child);
+    const nextParent = parent || this.scene;
+    if (preserveWorldTransform) nextParent.attach(child);
+    else nextParent.add(child);
     this.emitChange();
     this.emitSelection();
     return true;
