@@ -1,74 +1,112 @@
 # Atlas Engine
 
-Motor gráfico web móvil, open source, creado por módulos para crear, editar y probar juegos 3D desde navegador móvil.
+Atlas Engine es un editor 3D web móvil y de código abierto. Está diseñado para crear, organizar y editar escenas 3D directamente desde el navegador de un teléfono.
 
-## Demo
+## Estado actual
+
+**0.0.12.4.2 — Pre-alpha funcional del editor**
+
+Atlas ya incluye un launcher, gestión local de proyectos y un viewport 3D real basado en Three.js. Todavía no ofrece el ciclo completo para crear y exportar un juego.
+
+## Demo pública
 
 https://h9k99rpg8n-cloud.github.io/playcanvas-mobile-adaptation/
 
-## Versión actual
+## Funciones disponibles
 
-**0.0.4 — Primer editor**
+- Launcher adaptable a móvil.
+- Crear, abrir, renombrar, duplicar y eliminar proyectos.
+- Plantillas locales instalables.
+- Persistencia mediante IndexedDB y localForage.
+- Viewport 3D con Three.js.
+- Cámara orbital táctil con giro, zoom y desplazamiento.
+- Cubo, esfera, cápsula, cilindro, quad y toroide.
+- Selección de objetos y gizmos de mover, rotar y escalar.
+- Jerarquía con objetos padre e hijo.
+- Renombrado y creación de hijos desde la jerarquía.
+- Guardado de escena, transformaciones y `parentId`.
+- Contador de FPS configurable por proyecto.
 
-Esta versión agrega la primera pantalla del editor visual:
+## Funciones todavía pendientes
 
-- Página `editor.html`.
-- Barra superior del editor.
-- Viewport inicial simulado.
-- Panel de jerarquía.
-- Panel de inspector.
-- Panel de assets.
-- Botón para agregar objetos demo.
-- Apertura del editor desde proyectos.
+- Inspector de propiedades.
+- Deshacer y rehacer.
+- Eliminación y duplicación de objetos dentro del editor.
+- Importación de modelos, texturas y otros assets.
+- Materiales y luces editables.
+- Modo de juego.
+- Componentes o scripts.
+- Física, animación y audio integrado.
+- Exportación de juegos.
 
-Todavía no incluye render 3D real. Esta versión crea el cascarón del editor para que el motor ya tenga forma de herramienta.
+## Entradas activas
 
-## Arquitectura por módulos
+- `index.html`: launcher y administración de proyectos.
+- `scene-editor.html`: editor y viewport 3D.
+- `projects.html`: redirección compatible hacia el launcher actual.
+- `audio.html`: experimento independiente, todavía no integrado al motor.
 
-El proyecto se organiza por módulos para que el motor pueda crecer sin volverse un solo archivo gigante.
+## Arquitectura activa
 
 ```text
 src/
 ├── app/
-│   ├── editor-page.js
-│   └── projects-page.js
+│   ├── EditorCore.js
+│   ├── launcher-app.js
+│   ├── atlas-welcome.js
+│   ├── atlas-fps-settings.js
+│   └── atlas-template-sync.js
 ├── core/
-│   └── storage.js
+│   └── version.js
 └── modules/
-    ├── editor/
-    │   ├── editor-state.js
-    │   └── editor-ui.js
-    ├── projects/
-    │   ├── project-store.js
-    │   └── project-ui.js
-    └── templates/
-        └── template-registry.js
+    ├── camera/
+    │   └── OrbitController.js
+    ├── data/
+    │   ├── ProjectStore.js
+    │   └── Storage.js
+    ├── grid/
+    │   └── viewport-grid.js
+    ├── hierarchy/
+    │   └── HierarchyPanel.js
+    ├── rendering/
+    │   ├── PrimitiveFactory.js
+    │   ├── ViewportEnvironment.js
+    │   └── ViewportRenderer.js
+    ├── scenemanager/
+    │   └── SceneManager.js
+    ├── templates/
+    │   ├── template-registry.js
+    │   └── template-scenes.js
+    ├── tools/
+    │   ├── ToolboxUI.js
+    │   ├── TransformGizmo.js
+    │   └── ViewGizmo.js
+    └── utils/
+        └── StatsMonitor.js
 ```
 
-## Objetivo
+Consulta `docs/mobile-architecture.md` para el mapa funcional y `docs/scene-format.md` para el formato de guardado actual.
 
-La idea es construir una experiencia móvil ordenada:
+## Tecnologías
 
-1. **Launcher**: pantalla inicial para entrar al motor.
-2. **Gestión de proyectos**: crear, abrir, eliminar y listar proyectos.
-3. **Plantillas**: elegir la base del proyecto antes de abrir el editor.
-4. **Editor visual**: escena 3D, cámara táctil, jerarquía, inspector y assets.
-5. **Editor de código**: pantalla para escribir y editar scripts.
-6. **Modo probar juego**: ejecutar la escena en pantalla completa desde el móvil.
+- JavaScript con módulos ES.
+- Three.js 0.165.0.
+- localForage 1.10.0.
+- IndexedDB.
+- HTML y CSS sin framework.
+- GitHub Pages.
 
-## Estrategia inicial
+Las dependencias se mantienen congeladas durante el saneamiento. Cualquier actualización de Three.js debe realizarse aparte y con pruebas específicas.
 
-En vez de modificar todo el código fuente de PlayCanvas desde el primer día, este proyecto empezará con una base limpia:
+## Principios del proyecto
 
-- Documentar la arquitectura móvil.
-- Crear una interfaz prototipo desde cero.
-- Conectar el prototipo al motor cuando la base sea estable.
-- Mantener separada la adaptación móvil del código original para facilitar futuras actualizaciones.
-
-## Relación con PlayCanvas
-
-Este es un proyecto no oficial. PlayCanvas y sus proyectos originales pertenecen a sus respectivos autores. Si se reutiliza código de PlayCanvas, se conservarán los avisos de copyright y licencia correspondientes.
+1. Móvil primero.
+2. Una responsabilidad clara por módulo.
+3. No agregar funciones sobre una base inestable.
+4. Proteger proyectos guardados.
+5. Probar en iPhone antes de fusionar cambios.
+6. Mantener separado Atlas de Jumbo, Studio Lite y Sentrix Studio.
 
 ## Licencia
 
-Este repositorio usa licencia MIT. Revisa el archivo `LICENSE`.
+Este repositorio utiliza la licencia MIT. Consulta `LICENSE`.
