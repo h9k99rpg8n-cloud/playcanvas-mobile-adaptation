@@ -41,15 +41,19 @@ project.data.scene
 - `type` debe corresponder a una primitiva admitida.
 - Una relación circular debe rechazarse.
 
-## Riesgo conocido
+## Invariante de carga
 
-Al reconstruir padres se debe evitar interpretar una transformación local como transformación global. La prueba mínima será:
+Al reconstruir padres Atlas conserva las transformaciones locales guardadas. El reparenting interactivo, en cambio, conserva la transformación global para evitar que el objeto salte en el viewport.
+
+La cobertura automática comprueba este caso mínimo:
 
 1. Crear un padre desplazado.
 2. Crear un hijo con posición local distinta de cero.
 3. Añadir un nieto.
 4. Guardar y recargar.
 5. Confirmar transformaciones locales y globales.
+
+También comprueba que una relación circular se rechace.
 
 ## Siguiente versión del esquema
 

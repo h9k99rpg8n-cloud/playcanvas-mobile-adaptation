@@ -1,0 +1,12 @@
+{
+  "name": "atlas-engine",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "check": "npm test && find src -name '*.js' -print0 | xargs -0 -n1 node --check"
+  },
+  "devDependencies": {
+    "three": "0.165.0"
+  }
+}

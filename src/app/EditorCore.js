@@ -61,21 +61,10 @@ function serializeScene(manager) {
   })), ui: [] };
 }
 
-function restoreParenting(project, manager) {
-  const items = project?.data?.scene?.objects || [];
-  const map = new Map(manager.objects.map((object) => [object.userData.atlasId, object]));
-  items.forEach((item) => {
-    const object = map.get(item.id);
-    const group = map.get(item.parentId);
-    if (object && group) manager.setParent(object, group);
-  });
-}
-
 function loadProjectScene(project, viewport) {
   const sceneData = project?.data?.scene;
   if (!sceneData) return;
   viewport.sceneManager.loadSceneData(sceneData);
-  restoreParenting(project, viewport.sceneManager);
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
